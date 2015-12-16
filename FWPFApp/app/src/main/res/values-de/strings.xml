@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">Search Friend App</string>
+    <string name="title_activity_registration">Registrierung</string>
+
+    <!-- Strings related to login -->
+    <string name="action_sign_in">Registrieren</string>
+    <string name="userNameHint">Dein Name</string>
+    <string name="phoneNumberHint">Deine Telefonnummer</string>
+    <string name="error_invalid_userName">Der Name ist ungültig</string>
+    <string name="error_too_short_userName">Der Name ist zu kurz</string>
+    <string name="error_invalid_phoneNumber">Die Telefonnummer ist ungültig</string>
+    <string name="error_field_required">Diese Feld ist erforderlich</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email completions."</string>
+    <string name="GPSDialogCancel">Abbrechen</string>
+    <string name="GPSDialogSettings">Einstellungen</string>
+    <string name="GPSDialogTitle">Kein GPS</string>
+    <string name="GPSDialogMessage">GPS ist nicht aktiviert. Möchtest du zu den GPS-Einstellungen gehen?</string>
+    <string name="messageEnableGPS">Du musst dein GPS einschalten</string>
+
+</resources>
