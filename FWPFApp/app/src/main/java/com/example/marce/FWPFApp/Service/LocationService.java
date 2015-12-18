@@ -11,11 +11,19 @@ import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.marce.FWPFApp.ServerCommunication.ServerCommunicationManager;
+
 public class LocationService extends Service  implements LocationListener {
     private LocationManager locationManager;
 
+    ServerCommunicationManager serverCommunicationManager;
+
     public LocationService() {
 
+    }
+
+    public void setServerCommunicationManager(ServerCommunicationManager serverCommunicationManager) {
+        this.serverCommunicationManager = serverCommunicationManager;
     }
 
     @Override
@@ -56,6 +64,9 @@ public class LocationService extends Service  implements LocationListener {
     @Override
     public void onLocationChanged(Location location) {
         Toast.makeText(this, "Servie: update the Location", Toast.LENGTH_SHORT).show();
+
+        //Patrick
+        serverCommunicationManager.sendCurrentLocation(location);
     }
 
     @Override

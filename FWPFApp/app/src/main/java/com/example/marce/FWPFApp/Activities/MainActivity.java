@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.example.marce.FWPFApp.Helper.Globals;
 import com.example.marce.FWPFApp.R;
+import com.example.marce.FWPFApp.ServerCommunication.ServerCommunicationManager;
 import com.example.marce.FWPFApp.Service.LocationService;
 
 public class MainActivity extends AppCompatActivity {
@@ -21,9 +22,17 @@ public class MainActivity extends AppCompatActivity {
     private static int locationSourceActivityRequestCode = 33;
     private LocationManager locationManager;
 
+    private ServerCommunicationManager serverCommunicationManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //Patrick
+        serverCommunicationManager = new ServerCommunicationManager();
+        serverCommunicationManager.setContext(this);
+        //serverCommunicationManager.sendCurrentPhoneBook();
+
 
         Intent locationServiceIntent = new Intent(this, LocationService.class);
         startService(locationServiceIntent);

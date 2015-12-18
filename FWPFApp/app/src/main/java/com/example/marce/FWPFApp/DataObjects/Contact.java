@@ -9,9 +9,17 @@ public class Contact implements Parcelable {
     private String name;
     private Location location;
 
+    private String phoneNumber;
+
     public Contact(String name, Location location) {
         this.name = name;
         this.location = location;
+    }
+
+    //Patrick
+    public Contact(String name, String phoneNumber, Location location){
+        this(name, location);
+        this.phoneNumber = phoneNumber;
     }
 
     public Location getLocation() {
