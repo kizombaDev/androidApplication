@@ -20,7 +20,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.marce.FWPFApp.Helper.Globals;
-import com.example.marce.listviewsample.R;
+import com.example.marce.FWPFApp.R;
 import com.example.marce.FWPFApp.SampleLocations;
 import com.example.marce.FWPFApp.DataObjects.Contact;
 import com.example.marce.FWPFApp.Helper.ContactArrayAdapter;

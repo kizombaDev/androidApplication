@@ -11,7 +11,7 @@ import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 
 import com.example.marce.FWPFApp.Helper.Globals;
-import com.example.marce.listviewsample.R;
+import com.example.marce.FWPFApp.R;
 import com.example.marce.FWPFApp.Service.LocationService;
 
 public class MainActivity extends AppCompatActivity {

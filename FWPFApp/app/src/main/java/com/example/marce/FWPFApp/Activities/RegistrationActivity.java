@@ -22,7 +22,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.marce.FWPFApp.Helper.Globals;
-import com.example.marce.listviewsample.R;
+import com.example.marce.FWPFApp.R;
 
 public class RegistrationActivity extends AppCompatActivity {
 

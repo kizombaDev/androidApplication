@@ -18,7 +18,7 @@ import com.example.marce.FWPFApp.DataObjects.Contact;
 import com.example.marce.FWPFApp.Helper.CameraView;
 import com.example.marce.FWPFApp.Helper.Globals;
 import com.example.marce.FWPFApp.OpenGL.NavigationArrowRenderer;
-import com.example.marce.listviewsample.R;
+import com.example.marce.FWPFApp.R;
 
 public class NavigationActivity extends AppCompatActivity implements LocationListener, SensorEventListener {
 

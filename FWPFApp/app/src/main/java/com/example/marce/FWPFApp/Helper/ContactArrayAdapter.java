@@ -13,7 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.marce.FWPFApp.DataObjects.Contact;
-import com.example.marce.listviewsample.R;
+import com.example.marce.FWPFApp.R;
 
 
 public class ContactArrayAdapter extends ArrayAdapter<Contact> {
