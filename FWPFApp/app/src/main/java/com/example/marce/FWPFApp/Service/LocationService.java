@@ -66,7 +66,8 @@ public class LocationService extends Service  implements LocationListener {
         Toast.makeText(this, "Servie: update the Location", Toast.LENGTH_SHORT).show();
 
         //Patrick
-        serverCommunicationManager.sendCurrentLocation(location);
+        if(serverCommunicationManager != null)
+            serverCommunicationManager.sendCurrentLocation(location);
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.example.marce.FWPFApp.Helper;
 
 import android.content.Context;
 import android.location.Location;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import android.view.animation.RotateAnimation;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.marce.FWPFApp.DataObjects.Contact;
 import com.example.marce.FWPFApp.R;
@@ -85,29 +87,44 @@ public class ContactArrayAdapter extends ArrayAdapter<Contact> {
 
     private void updateDeviceDegree(Location currentLocation, float currentDegree) {
 
-        if (currentLocation == null)
-            return;
+        if (currentLocation == null) {
+            currentLocation = new Location("");
+            currentLocation.setLongitude(11.343355);
+            currentLocation.setLatitude(49.565346);
+        }
 
         for (int i = 0; i < rowObjects.length; i++) {
 
             Location destination = rowObjects[i].getContact().getLocation();
-
+            float lastIconDegree = rowObjects[i].getLastIconDegree();
             float currentCompassDegree;
-
             float degreeToDestination = currentLocation.bearingTo(destination);
 
-            if (currentDegree < degreeToDestination) {
-                currentCompassDegree = 180 + (degreeToDestination - currentDegree);
-            } else {
-                currentCompassDegree = 180 + (degreeToDestination - currentDegree);
+            currentCompassDegree = 180 + (degreeToDestination - currentDegree);
+            if(currentCompassDegree < 0)
+            {
+                currentCompassDegree += 360;
+            }
+
+            float nextIconDegree = currentCompassDegree;
+
+            if(0 < lastIconDegree && lastIconDegree < 90 && 270 < nextIconDegree && nextIconDegree < 360)
+            {
+                nextIconDegree -= 360;
+            }
+
+            if(0 < nextIconDegree && nextIconDegree < 90 && 270 < lastIconDegree && lastIconDegree < 360)
+            {
+                lastIconDegree -= 360;
             }
 
             // create a rotation animation (reverse turn degree degrees)
             RotateAnimation ra = new RotateAnimation(
-                    rowObjects[i].getLastIconDegree(),
-                    currentCompassDegree,
+                    lastIconDegree,
+                    nextIconDegree,
                     Animation.RELATIVE_TO_SELF, 0.5f,
                     Animation.RELATIVE_TO_SELF, 0.5f);
+
 
             // how long the animation will take place
             ra.setDuration(210);

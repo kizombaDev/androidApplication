@@ -71,6 +71,14 @@ public class ContactListViewActivity extends AppCompatActivity implements Locati
                 new Contact("Max Berlin", SampleLocations.getBerlin()),
                 new Contact("Peter London", SampleLocations.getLondon()),
                 new Contact("Tobias Nürnberg", SampleLocations.getNuernberg()),
+                new Contact("Peter Roma", SampleLocations.getRoma()),
+                new Contact("Max Berlin", SampleLocations.getBerlin()),
+                new Contact("Peter London", SampleLocations.getLondon()),
+                new Contact("Tobias Nürnberg", SampleLocations.getNuernberg()),
+                new Contact("Peter Roma", SampleLocations.getRoma()),
+                new Contact("Max Berlin", SampleLocations.getBerlin()),
+                new Contact("Peter London", SampleLocations.getLondon()),
+                new Contact("Tobias Nürnberg", SampleLocations.getNuernberg()),
                 new Contact("Peter Roma", SampleLocations.getRoma())};
     }
 
@@ -167,7 +175,7 @@ public class ContactListViewActivity extends AppCompatActivity implements Locati
     private void registerSensors()
     {
         try {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 15000, 5, this);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 5, this);
 
         } catch (SecurityException e) {
             Log.e("GPS", "No permissions", e);

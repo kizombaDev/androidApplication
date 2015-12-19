@@ -11,6 +11,7 @@ import android.location.LocationListener;
 import android.opengl.GLSurfaceView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.view.ViewGroup.LayoutParams;
 
@@ -30,30 +31,29 @@ public class NavigationActivity extends AppCompatActivity implements LocationLis
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
-        //setContentView(R.layout.activity_navigation);
-        LinearLayout cameraViewContainer = (LinearLayout)findViewById(R.id.cameraView);
+        //LinearLayout cameraViewContainer = (LinearLayout)findViewById(R.id.cameraView);
 
         Intent intent = this.getIntent();
         Contact contact = intent.getParcelableExtra(Globals.navigationActitivyIntend());
 
-        // Now let's create an OpenGL surface.
-        glView = new GLSurfaceView( this );
-        // To see the camera preview, the OpenGL surface has to be created translucently.
-        // See link above.
-        glView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
-        glView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
-        // The renderer will be implemented in a separate class, GLView, which I'll show next.
-        glView.setRenderer(new NavigationArrowRenderer());
-        // Now set this as the main view.
-        //setContentView( glView  );
-        //cameraViewContainer.addView(glView);
+        initGLView();
+        initCameraView();
+    }
 
-        setContentView(glView);
-
+    private void initCameraView() {
         if(!Globals.isEmulator()) {
             CameraView cameraView = new CameraView(this);
             addContentView(cameraView, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
         }
+    }
+
+    private void initGLView() {
+        // Now let's create an OpenGL surface.
+        glView = new GLSurfaceView( this );
+        glView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
+        glView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
+        glView.setRenderer(new NavigationArrowRenderer());
+        setContentView(glView);
     }
 
     @Override
