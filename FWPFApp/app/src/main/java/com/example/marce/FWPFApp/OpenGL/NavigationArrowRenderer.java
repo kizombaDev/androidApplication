@@ -11,6 +11,8 @@ public class NavigationArrowRenderer implements Renderer {
 
     private NavigationArrow navigationArrow;		// the navigationArrow
 
+    private float targetArrowDegree;
+
     /** Constructor to set the handed over context */
     public NavigationArrowRenderer() {
         this.navigationArrow = new NavigationArrow();
@@ -27,10 +29,10 @@ public class NavigationArrowRenderer implements Renderer {
         if(true) {
             // Drawing
             gl.glTranslatef(0.0f, 0.0f, -5.0f);        // move 5 units INTO the screen
-            //gl.glRotatex(90,1,1,1);
 
+            gl.glRotatef(targetArrowDegree, 0.0f, 0.0f, 1.0f);
             // is the same as moving the camera 5 units away
-            navigationArrow.draw(gl);                        // Draw the triangle
+            navigationArrow.draw(gl);                        // Draw the Arrow
         }
     }
 
@@ -53,5 +55,10 @@ public class NavigationArrowRenderer implements Renderer {
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
+    }
+
+
+    public void updateArrowDegree(float nextArrowDegree) {
+        this.targetArrowDegree = 360 - nextArrowDegree;
     }
 }

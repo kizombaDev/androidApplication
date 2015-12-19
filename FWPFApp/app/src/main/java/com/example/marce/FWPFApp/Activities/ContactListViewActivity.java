@@ -19,31 +19,32 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.example.marce.FWPFApp.DataObjects.Contact;
+import com.example.marce.FWPFApp.Helper.ContactArrayAdapter;
+import com.example.marce.FWPFApp.Helper.DegreeCalculationHelper;
 import com.example.marce.FWPFApp.Helper.Globals;
 import com.example.marce.FWPFApp.R;
 import com.example.marce.FWPFApp.SampleLocations;
-import com.example.marce.FWPFApp.DataObjects.Contact;
-import com.example.marce.FWPFApp.Helper.ContactArrayAdapter;
 
 
 public class ContactListViewActivity extends AppCompatActivity implements LocationListener, SensorEventListener {
 
     private ContactArrayAdapter contactArrayAdapter;
+    private boolean isLocationProviderEnabled = true;
+    private DegreeCalculationHelper degreeCalculationHelper;
     private Sensor accelerometer;
     private Sensor magnetometer;
     private SensorManager mSensorManager;
     private LocationManager locationManager;
-    private boolean isLocationProviderEnabled = true;
-    private long sensorMilliSeconds;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        sensorMilliSeconds = System.currentTimeMillis();
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_user_list_view);
+
 
         locationManager = (LocationManager)
                 getSystemService(Context.LOCATION_SERVICE);
@@ -51,6 +52,7 @@ public class ContactListViewActivity extends AppCompatActivity implements Locati
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         accelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         magnetometer = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+        degreeCalculationHelper = new DegreeCalculationHelper(300);
 
         initListView();
     }
@@ -86,16 +88,14 @@ public class ContactListViewActivity extends AppCompatActivity implements Locati
         userListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if(isLocationProviderEnabled) {
+                if (isLocationProviderEnabled) {
                     Contact contactToNaviagte = contactArrayAdapter.getUserOfPosition(position);
                     if (contactToNaviagte != null) {
                         Intent myIntent = new Intent(ContactListViewActivity.this, NavigationActivity.class);
                         myIntent.putExtra(Globals.navigationActitivyIntend(), contactToNaviagte);
                         ContactListViewActivity.this.startActivity(myIntent);
                     }
-                }
-                else
-                {
+                } else {
                     Toast.makeText(ContactListViewActivity.this, R.string.messageEnableGPS, Toast.LENGTH_SHORT).show();
                 }
             }
@@ -136,34 +136,12 @@ public class ContactListViewActivity extends AppCompatActivity implements Locati
         contactArrayAdapter.locationProviderDisabled();
     }
 
-    float[] mGravity = null;
-    float[] mGeomagnetic = null;
-
     @Override
     public void onSensorChanged(SensorEvent event) {
-
-        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER)
-            mGravity = event.values;
-        if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD)
-            mGeomagnetic = event.values;
-        if (mGravity != null && mGeomagnetic != null) {
-            float R[] = new float[9];
-            float I[] = new float[9];
-            boolean success = SensorManager.getRotationMatrix(R, I, mGravity, mGeomagnetic);
-            if (success) {
-                float orientation[] = new float[3];
-                SensorManager.getOrientation(R, orientation);
-                float azimuthInRadians = orientation[0];
-                float currentDegree = (float) (Math.toDegrees(azimuthInRadians) + 360) % 360;
-
-                long currentTime = System.currentTimeMillis();
-                if(currentTime - sensorMilliSeconds > 300)
-                {
-                    sensorMilliSeconds = currentTime;
-                    contactArrayAdapter.deviceDegreeChanged(currentDegree);
-                }
-
-            }
+        degreeCalculationHelper.setSensorEvent(event);
+        if (degreeCalculationHelper.hasDeviceDegree()) {
+            float deviceDegree = degreeCalculationHelper.getDeviceDegree();
+            contactArrayAdapter.deviceDegreeChanged(deviceDegree);
         }
     }
 
@@ -171,7 +149,6 @@ public class ContactListViewActivity extends AppCompatActivity implements Locati
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
     }
-
     private void registerSensors()
     {
         try {

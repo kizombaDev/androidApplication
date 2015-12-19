@@ -26,7 +26,7 @@ public class GLUserInfoRenderer implements Renderer {
 
         if(true) {
             // Drawing
-            gl.glTranslatef(0.0f, 0.0f, -5.0f);        // move 5 units INTO the screen
+            gl.glTranslatef(0.0f, 0.0f, -6.0f);        // move 5 units INTO the screen
             // is the same as moving the camera 5 units away
             navigationArrow.draw(gl);                        // Draw the triangle
         }

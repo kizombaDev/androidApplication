@@ -3,7 +3,6 @@ package com.example.marce.FWPFApp.Helper;
 
 import android.content.Context;
 import android.location.Location;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +11,6 @@ import android.view.animation.RotateAnimation;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.marce.FWPFApp.DataObjects.Contact;
 import com.example.marce.FWPFApp.R;
@@ -50,7 +48,7 @@ public class ContactArrayAdapter extends ArrayAdapter<Contact> {
         TextView distanceView = (TextView) rowView.findViewById(R.id.distance);
         rowObjects[position].setDistanceTextView(distanceView);
         distanceView.setText(R.string.NoGPSSingal);
-        textView.setText(rowObjects[position].getContact().getName().toString());
+        textView.setText(rowObjects[position].getContact().getName());
 
         ImageView iconBlackView = (ImageView) rowView.findViewById(R.id.iconBlack);
         ImageView iconView = (ImageView) rowView.findViewById(R.id.icon);
@@ -63,7 +61,7 @@ public class ContactArrayAdapter extends ArrayAdapter<Contact> {
     private void updateDistance(Location location) {
 
         for (int i = 0; i < rowObjects.length; i++) {
-            String distanceText = null;
+            String distanceText;
             if (location == null) {
                 distanceText = "";
             } else {
@@ -88,9 +86,11 @@ public class ContactArrayAdapter extends ArrayAdapter<Contact> {
     private void updateDeviceDegree(Location currentLocation, float currentDegree) {
 
         if (currentLocation == null) {
+           /*
             currentLocation = new Location("");
             currentLocation.setLongitude(11.343355);
-            currentLocation.setLatitude(49.565346);
+            currentLocation.setLatitude(49.565346);*/
+            return;
         }
 
         for (int i = 0; i < rowObjects.length; i++) {
