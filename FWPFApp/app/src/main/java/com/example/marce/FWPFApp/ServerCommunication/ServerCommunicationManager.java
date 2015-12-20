@@ -23,7 +23,9 @@ import org.json.JSONObject;
  */
 public class ServerCommunicationManager {
 
-    private String serverURL = "www.myServer.de";
+    private String serverURL = "http://192.168.2.107/friendFinder/index.php";
+    //private String serverURL = "http://xml.photography-sf.de/api.php";
+
     private PhonebookRetriever phonebookRetriever;
     private Context context;
 
@@ -35,68 +37,42 @@ public class ServerCommunicationManager {
         this.context = context;
     }
 
-    public void sendCurrentPhoneBook() {
+    public void testServerCommunicationManager(){
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("id", "3");
+            obj.put("name", "NAME OF STUDENT");
 
+        } catch (JSONException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        sendPostRequest(obj);
+
+    }
+
+    public void sendCurrentPhoneBook() {
         if(phonebookRetriever == null) {
             phonebookRetriever = new PhonebookRetriever(context);
         }
 
         Contact[] contacts = phonebookRetriever.getAllPhonebookContacts();
 
-        //TODO: send to server
-
-
+        //sendPostRequest();
     }
 
     public void sendCurrentLocation(Location location) {
-        //TODO: send location to server
+
+    }
+
+    public void sendNameAndNumber(String name, String phoneNumber){
+
     }
 
     public void sendPostRequest(JSONObject jsonObject) {
-
-        HttpURLConnection urlConnection = null;
-        try {
-            // create connection
-            URL urlToRequest = new URL(serverURL);
-            urlConnection = (HttpURLConnection) urlToRequest.openConnection();
-
-            urlConnection.setDoOutput(true);
-            urlConnection.setRequestMethod("POST");
-            urlConnection.setRequestProperty("Content-Type",
-                    "application/json; charset=UTF-8");
-
-            urlConnection.connect();
-
-            OutputStreamWriter writer = new OutputStreamWriter(urlConnection.getOutputStream());
-            String output = jsonObject.toString();
-            writer.write(output);
-            writer.flush();
-            writer.close();
-
-
-
-
-
-            // handle issues
-            int statusCode = urlConnection.getResponseCode();
-            if (statusCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
-                // handle unauthorized (if service requires user login)
-            } else if (statusCode != HttpURLConnection.HTTP_OK) {
-                // handle any other errors, like 404, 500,..
-            }
-
-        } catch (MalformedURLException e) {
-            // URL is invalid
-        } catch (SocketTimeoutException e) {
-            // data retrieval or connection timed out
-        } catch (IOException e) {
-            // could not read response body
-            // (could not create input stream)
-        } finally {
-            if (urlConnection != null) {
-                urlConnection.disconnect();
-            }
-        }
+        Runnable thread = new RequestSender(serverURL, jsonObject.toString());
+        new Thread(thread).start();
     }
 
 }
