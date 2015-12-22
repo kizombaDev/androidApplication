@@ -20,8 +20,8 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.marce.FWPFApp.DataObjects.Contact;
+import com.example.marce.FWPFApp.Helper.AngleCalculationHelper;
 import com.example.marce.FWPFApp.Helper.ContactArrayAdapter;
-import com.example.marce.FWPFApp.Helper.DegreeCalculationHelper;
 import com.example.marce.FWPFApp.Helper.Globals;
 import com.example.marce.FWPFApp.R;
 import com.example.marce.FWPFApp.SampleLocations;
@@ -31,7 +31,7 @@ public class ContactListViewActivity extends AppCompatActivity implements Locati
 
     private ContactArrayAdapter contactArrayAdapter;
     private boolean isLocationProviderEnabled = true;
-    private DegreeCalculationHelper degreeCalculationHelper;
+    private AngleCalculationHelper angleCalculationHelper;
     private Sensor accelerometer;
     private Sensor magnetometer;
     private SensorManager mSensorManager;
@@ -52,7 +52,7 @@ public class ContactListViewActivity extends AppCompatActivity implements Locati
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         accelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         magnetometer = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
-        degreeCalculationHelper = new DegreeCalculationHelper(300);
+        angleCalculationHelper = new AngleCalculationHelper(300);
 
         initListView();
     }
@@ -138,9 +138,9 @@ public class ContactListViewActivity extends AppCompatActivity implements Locati
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        degreeCalculationHelper.setSensorEvent(event);
-        if (degreeCalculationHelper.hasDeviceDegree()) {
-            float deviceDegree = degreeCalculationHelper.getDeviceDegree();
+        angleCalculationHelper.setSensorEvent(event);
+        if (angleCalculationHelper.hasDeviceDegree()) {
+            float deviceDegree = angleCalculationHelper.getDeviceDegree();
             contactArrayAdapter.deviceDegreeChanged(deviceDegree);
         }
     }

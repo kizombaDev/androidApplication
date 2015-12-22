@@ -1,8 +1,10 @@
 package com.example.marce.FWPFApp.OpenGL;
 
-
 import android.opengl.GLSurfaceView.Renderer;
 import android.opengl.GLU;
+import android.util.Log;
+
+import com.example.marce.FWPFApp.Helper.Globals;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -12,10 +14,15 @@ public class NavigationArrowRenderer implements Renderer {
     private NavigationArrow navigationArrow;		// the navigationArrow
 
     private float targetArrowDegree;
+    private boolean hasDegree = false;
+    private float deviceInclinationAngle;
 
-    /** Constructor to set the handed over context */
     public NavigationArrowRenderer() {
         this.navigationArrow = new NavigationArrow();
+
+        if (Globals.isEmulator()) {
+            hasDegree = true;
+        }
     }
 
     @Override
@@ -26,13 +33,15 @@ public class NavigationArrowRenderer implements Renderer {
         // Reset the Modelview Matrix
         gl.glLoadIdentity();
 
-        if(true) {
+        if (hasDegree) {
             // Drawing
             gl.glTranslatef(0.0f, 0.0f, -5.0f);        // move 5 units INTO the screen
 
             gl.glRotatef(targetArrowDegree, 0.0f, 0.0f, 1.0f);
+            gl.glRotatef(deviceInclinationAngle, 1.0f, 0.0f, 0.0f);
             // is the same as moving the camera 5 units away
             navigationArrow.draw(gl);                        // Draw the Arrow
+            Log.i("Marcel", "angle: " + deviceInclinationAngle);
         }
     }
 
@@ -58,7 +67,12 @@ public class NavigationArrowRenderer implements Renderer {
     }
 
 
-    public void updateArrowDegree(float nextArrowDegree) {
+    public void updateArrowAngle(float nextArrowDegree) {
         this.targetArrowDegree = 360 - nextArrowDegree;
+        hasDegree = true;
+    }
+
+    public void updateInclinationAngle(float deviceInclinationAngle) {
+        this.deviceInclinationAngle = deviceInclinationAngle;
     }
 }

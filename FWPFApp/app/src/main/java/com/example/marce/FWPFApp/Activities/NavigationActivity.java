@@ -18,8 +18,8 @@ import android.util.Log;
 import android.view.ViewGroup.LayoutParams;
 
 import com.example.marce.FWPFApp.DataObjects.Contact;
+import com.example.marce.FWPFApp.Helper.AngleCalculationHelper;
 import com.example.marce.FWPFApp.Helper.CameraView;
-import com.example.marce.FWPFApp.Helper.DegreeCalculationHelper;
 import com.example.marce.FWPFApp.Helper.Globals;
 import com.example.marce.FWPFApp.OpenGL.NavigationArrowRenderer;
 
@@ -32,16 +32,15 @@ public class NavigationActivity extends AppCompatActivity implements LocationLis
     private SensorManager mSensorManager;
     private Sensor accelerometer;
     private Sensor magnetometer;
-    private float currentDeviceDegree;
-    private DegreeCalculationHelper degreeCalculationHelper;
+    private float currentDeviceAngle;
+    private AngleCalculationHelper angleCalculationHelper;
     private Contact contact;
+    private float currentDeviceInclinationAngle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-
-        //LinearLayout cameraViewContainer = (LinearLayout)findViewById(R.id.cameraView);
 
         Intent intent = this.getIntent();
         contact = intent.getParcelableExtra(Globals.navigationActitivyIntend());
@@ -49,18 +48,25 @@ public class NavigationActivity extends AppCompatActivity implements LocationLis
         locationManager = (LocationManager)
                 getSystemService(Context.LOCATION_SERVICE);
 
+        //todo do it better
+        try {
+            this.currentDeviceLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        } catch (SecurityException e) {
+            Log.e("GPS", "No permissions", e);
+        }
+
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         accelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         magnetometer = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
 
-        this.degreeCalculationHelper = new DegreeCalculationHelper(300);
+        this.angleCalculationHelper = new AngleCalculationHelper(300);
 
         initGLView();
         initCameraView();
     }
 
     private void initCameraView() {
-        if(!Globals.isEmulator()) {
+        if (!Globals.isEmulator()) {
             CameraView cameraView = new CameraView(this);
             addContentView(cameraView, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
         }
@@ -68,7 +74,7 @@ public class NavigationActivity extends AppCompatActivity implements LocationLis
 
     private void initGLView() {
         // Now let's create an OpenGL surface.
-        glView = new GLSurfaceView( this );
+        glView = new GLSurfaceView(this);
         glView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
         glView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
         navigationArrowRenderer = new NavigationArrowRenderer();
@@ -77,16 +83,14 @@ public class NavigationActivity extends AppCompatActivity implements LocationLis
     }
 
     @Override
-    protected void onPause()
-    {
+    protected void onPause() {
         super.onPause();
         unregisterSensors();
         glView.onPause();
     }
 
     @Override
-    protected void onResume()
-    {
+    protected void onResume() {
         super.onResume();
         registerSensors();
         glView.onResume();
@@ -118,9 +122,10 @@ public class NavigationActivity extends AppCompatActivity implements LocationLis
     @Override
     public void onSensorChanged(SensorEvent event) {
 
-        degreeCalculationHelper.setSensorEvent(event);
-        if (degreeCalculationHelper.hasDeviceDegree()) {
-            this.currentDeviceDegree = degreeCalculationHelper.getDeviceDegree();
+        angleCalculationHelper.setSensorEvent(event);
+        if (angleCalculationHelper.hasDeviceDegree()) {
+            this.currentDeviceAngle = angleCalculationHelper.getDeviceDegree();
+            navigationArrowRenderer.updateInclinationAngle(angleCalculationHelper.getDeviceInclinationAngle());
             updateGLArrow();
 
         }
@@ -140,19 +145,19 @@ public class NavigationActivity extends AppCompatActivity implements LocationLis
             return;
         }
 
-        if (!degreeCalculationHelper.hasDeviceDegree())
+        if (!angleCalculationHelper.hasDeviceDegree())
             return;
 
         Location destination = contact.getLocation();
-        float nextArrowDegree;
-        float degreeToDestination = currentDeviceLocation.bearingTo(destination);
+        float nextArrowAngle;
+        float angleToDestination = currentDeviceLocation.bearingTo(destination);
 
-        nextArrowDegree = (degreeToDestination - currentDeviceDegree);
-        if (nextArrowDegree < 0) {
-            nextArrowDegree += 360;
+        nextArrowAngle = (angleToDestination - currentDeviceAngle);
+        if (nextArrowAngle < 0) {
+            nextArrowAngle += 360;
         }
 
-        navigationArrowRenderer.updateArrowDegree(nextArrowDegree);
+        navigationArrowRenderer.updateArrowAngle(nextArrowAngle);
 
     }
 
