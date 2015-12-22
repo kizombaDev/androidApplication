@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
         //Patrick
         serverCommunicationManager = new ServerCommunicationManager();
         serverCommunicationManager.setContext(this);
-        //serverCommunicationManager.sendCurrentPhoneBook();
+        serverCommunicationManager.testServerCommunicationManager();
 
 
         Intent locationServiceIntent = new Intent(this, LocationService.class);
