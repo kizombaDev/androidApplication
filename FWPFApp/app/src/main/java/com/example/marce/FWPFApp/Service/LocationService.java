@@ -67,7 +67,7 @@ public class LocationService extends Service  implements LocationListener {
 
         //Patrick
         if(serverCommunicationManager != null)
-            serverCommunicationManager.sendCurrentLocation(location);
+            serverCommunicationManager.updateMyCurrentLocation(location);
     }
 
     @Override

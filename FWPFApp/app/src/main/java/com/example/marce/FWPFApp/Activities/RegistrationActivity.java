@@ -207,6 +207,9 @@ public class RegistrationActivity extends AppCompatActivity {
             try {
                 // Simulate network access.
                 Thread.sleep(2000);
+
+
+
             } catch (InterruptedException e) {
                 return false;
             }

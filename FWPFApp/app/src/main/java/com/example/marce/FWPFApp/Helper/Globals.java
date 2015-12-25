@@ -20,6 +20,10 @@ public class Globals {
         return "Setting.phoneNumber";
     }
 
+    public static String settingUserId() {
+        return "Setting.userId";
+    }
+
     public static String settingFile() {
         return "Setting.globalSettignFile";
     }

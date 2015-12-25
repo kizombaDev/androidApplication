@@ -1,30 +1,34 @@
 package com.example.marce.FWPFApp.ServerCommunication;
 
-import com.example.marce.FWPFApp.DataObjects.Contact;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.location.Location;
+
+import com.example.marce.FWPFApp.Helper.Globals;
 import com.example.marce.FWPFApp.Helper.PhonebookRetriever;
 
-import android.location.Location;
-import android.util.Log;
-
-import android.content.Context;
-
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.*;
-import java.net.*;
-
-import java.io.DataOutputStream;
-
-import org.json.JSONObject;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by Patrick on 18.12.2015.
  */
 public class ServerCommunicationManager {
 
-    private String serverURL = "http://192.168.2.107/friendFinder/index.php";
+    //private String serverURL = "http://192.168.2.107/friendFinder/index.php";
     //private String serverURL = "http://xml.photography-sf.de/api.php";
+
+    private String serverURL = "http://th-app.azurewebsites.net/api";
+
+    private String registerMyselfPostRequestURLPart = "/users";
+    private String phonebookContactLocationsPostRequestURLPart = "/contact-locations";
+    private String sendMyLocationPostRequestURLPart = "/locations";
+
 
     private PhonebookRetriever phonebookRetriever;
     private Context context;
@@ -38,41 +42,113 @@ public class ServerCommunicationManager {
     }
 
     public void testServerCommunicationManager(){
-        JSONObject obj = new JSONObject();
-        try {
-            obj.put("id", "3");
-            obj.put("name", "NAME OF STUDENT");
+        //registerMyselfAndGetMyId("Patrick", "1234");
+        //getLocationDataForAllPhonebookContacts();
 
-        } catch (JSONException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        Location testLocation = new Location("");
+        testLocation.setLatitude(41.895623);
+        testLocation.setLongitude(12.482269);
+        updateMyCurrentLocation(testLocation);
 
-        sendPostRequest(obj);
-
+        //getLocationDataForContact("2");
     }
 
-    public void sendCurrentPhoneBook() {
+    public void registerMyselfAndGetMyId(String myName, String myPhoneNumber) {
+        String url = serverURL + registerMyselfPostRequestURLPart;
+
+        JSONObject jsonToSend = new JSONObject();
+        try{
+            jsonToSend.put("Username", myName);
+            jsonToSend.put("PhoneNumber", myPhoneNumber);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        sendJSONPostRequest(url, jsonToSend);
+    }
+
+    public void getLocationDataForAllPhonebookContacts() {
+        String url = serverURL + phonebookContactLocationsPostRequestURLPart;
+
         if(phonebookRetriever == null) {
             phonebookRetriever = new PhonebookRetriever(context);
         }
+        String[] phonebookNumbers = phonebookRetriever.getAllPhonebookNumbers();
 
-        Contact[] contacts = phonebookRetriever.getAllPhonebookContacts();
+        JSONArray phonebookNumbersJSON = new JSONArray();
 
-        //sendPostRequest();
+        JSONObject currentPhoneNumberJSON;
+        for(int i = 0; i < phonebookNumbers.length; i++){
+            currentPhoneNumberJSON = new JSONObject();
+            try{
+                currentPhoneNumberJSON.put("PhoneNumber", phonebookNumbers[i]);
+                phonebookNumbersJSON.put(currentPhoneNumberJSON);
+            }catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        sendJSONPostRequest(url, phonebookNumbersJSON);
     }
 
-    public void sendCurrentLocation(Location location) {
-
+    public void getLocationDataForContact(String requestedId) {
+        String url = serverURL + phonebookContactLocationsPostRequestURLPart + "/" + requestedId;
+        sendEmptyPostRequest(url);
     }
 
-    public void sendNameAndNumber(String name, String phoneNumber){
+    public void updateMyCurrentLocation(Location location) {
+        SharedPreferences settings = context.getSharedPreferences(Globals.settingFile(), context.MODE_PRIVATE);
 
+        //kommt raus hier
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString(Globals.settingUserId(), "2");
+        editor.commit();
+
+
+        String myId = settings.getString(Globals.settingUserId(), "-1");
+        //String myId = "5";
+
+
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
+        String nowAsISO = dateFormat.format(new Date());
+
+
+        String url = serverURL + sendMyLocationPostRequestURLPart + "/" + myId;
+
+        JSONObject jsonToSend = new JSONObject();
+        try{
+            jsonToSend.put("Id", myId);
+            jsonToSend.put("Longitude", location.getLongitude());
+            jsonToSend.put("Latitude", location.getLatitude());
+            jsonToSend.put("LocationUpdateTime", nowAsISO);
+        }catch (JSONException e){
+            e.printStackTrace();
+        }
+
+        sendJSONPutRequest(url, jsonToSend);
     }
 
-    public void sendPostRequest(JSONObject jsonObject) {
-        Runnable thread = new RequestSender(serverURL, jsonObject.toString());
+    public void sendJSONPostRequest(String url, Object jsonToSend) {
+        Runnable thread = new RequestSender(url, "POST", jsonToSend);
         new Thread(thread).start();
     }
 
+    public void sendJSONPutRequest(String url, Object jsonToSend) {
+        Runnable thread = new RequestSender(url, "PUT", jsonToSend);
+        new Thread(thread).start();
+    }
+
+    public void sendEmptyPostRequest(String url) {
+        Runnable thread = new RequestSender(url, "POST", null);
+        new Thread(thread).start();
+    }
+
+//    public void sendJSONObjectPostRequest(String url, JSONObject jsonObject) {
+//        Runnable thread = new RequestSender(url, jsonObject.toString());
+//        new Thread(thread).start();
+//    }
+//
+//    public void sendJSONArrayPostRequest(String url, JSONArray jsonArray) {
+//        Runnable thread = new RequestSender(url, jsonArray.toString());
+//        new Thread(thread).start();
+//    }
 }

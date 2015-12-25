@@ -2,6 +2,7 @@ package com.example.marce.FWPFApp.ServerCommunication;
 
 import android.util.Log;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -21,15 +22,19 @@ import java.net.URL;
  * Created by Patrick on 20.12.2015.
  */
 public class RequestSender implements Runnable {
-    String serverURL;
-    String requestString;
+    String requestURL;
+    String requestType;
+    Object JSONToSend;
 
-    public RequestSender(String serverURL, String requestString) {
-        this.serverURL = serverURL;
-        this.requestString = requestString;
+
+    public RequestSender(String requestURL, String requestType, Object JSONToSend) {
+        this.requestURL = requestURL;
+        this.requestType = requestType;
+        this.JSONToSend = JSONToSend;
     }
 
-    public JSONObject readJSONFromInputStream(InputStream inputStream){
+    public String readJSONStringFromInputStream(InputStream inputStream){
+        String returnJSONString = "";
         try {
             BufferedReader streamReader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
             StringBuilder responseStrBuilder = new StringBuilder();
@@ -38,35 +43,69 @@ public class RequestSender implements Runnable {
             while ((inputStr = streamReader.readLine()) != null)
                 responseStrBuilder.append(inputStr);
 
-            JSONObject jsonObject = new JSONObject(responseStrBuilder.toString());
+            returnJSONString = responseStrBuilder.toString();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return returnJSONString;
+            //jsonToReturn = new JSONObject(responseStrBuilder.toString());
 
             //returns the json object
-            return jsonObject;
+            //return jsonObject;
 
-        } catch (IOException e) {
-            e.printStackTrace();
+        //} catch (IOException e) {
+        //    e.printStackTrace();
+        //} catch (JSONException e) {
+        //    e.printStackTrace();
+        //}
+        //return jsonToReturn;
+    }
+
+    public JSONArray readJSONArrayFromInputStream(InputStream inputStream){
+        JSONArray returnJSONArray = null;
+        try {
+            returnJSONArray = new JSONArray(readJSONStringFromInputStream(inputStream));
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return null;
+        return returnJSONArray;
+    }
+
+    public JSONObject readJSONObjectFromInputStream(InputStream inputStream){
+        JSONObject returnJSONObject = null;
+        try {
+            returnJSONObject =  new JSONObject(readJSONStringFromInputStream(inputStream));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return  returnJSONObject;
     }
 
     public void run() {
         HttpURLConnection urlConnection = null;
         try {
             // create connection
-            URL urlToRequest = new URL(serverURL);
+            URL urlToRequest = new URL(requestURL);
             urlConnection = (HttpURLConnection) urlToRequest.openConnection();
 
-            urlConnection.setDoOutput(true);
-            urlConnection.setRequestMethod("POST");
+
+            urlConnection.setRequestMethod(requestType);
             urlConnection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
 
-            //Send request
-            DataOutputStream wr = new DataOutputStream(urlConnection.getOutputStream());
-            wr.writeBytes(requestString);
-            wr.flush ();
-            wr.close ();
+
+
+            urlConnection.setDoOutput(true);
+
+
+            if(JSONToSend != null) {
+                //Send request
+                DataOutputStream wr = new DataOutputStream(urlConnection.getOutputStream());
+                wr.writeBytes(JSONToSend.toString());
+                wr.flush ();
+                wr.close();
+            } else {
+                urlConnection.connect();
+            }
 
 
 
@@ -78,20 +117,35 @@ public class RequestSender implements Runnable {
                 // handle any other errors, like 404, 500,..
             }
 
-
             //Get Response
-            InputStream is = urlConnection.getInputStream();
+            InputStream inputStream = urlConnection.getInputStream();
 
-            JSONObject jsonObject = readJSONFromInputStream(is);
+
+            Object responseJSON;
+            if(JSONToSend instanceof JSONObject){
+                responseJSON = (JSONObject) readJSONObjectFromInputStream(inputStream);
+            }
+            else if(JSONToSend instanceof JSONArray){
+                responseJSON = (JSONArray) readJSONArrayFromInputStream(inputStream);
+            } else if(JSONToSend == null){
+                responseJSON = (JSONObject) readJSONObjectFromInputStream(inputStream);
+            }
+
+            Log.e("asdölfk", "asdölkfj");
+
+
 
 
         } catch (MalformedURLException e) {
             // URL is invalid
+            e.printStackTrace();
         } catch (SocketTimeoutException e) {
             // data retrieval or connection timed out
+            e.printStackTrace();
         } catch (IOException e) {
             // could not read response body
             // (could not create input stream)
+            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
