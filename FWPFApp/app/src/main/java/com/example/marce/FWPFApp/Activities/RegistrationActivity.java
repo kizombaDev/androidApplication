@@ -207,15 +207,14 @@ public class RegistrationActivity extends AppCompatActivity {
         UserRegisterTask(String userName, String phoneNumber) {
             this.userName = userName;
             this.phoneNumber = phoneNumber;
-            //this.requestResponseJsonWithMyId = null;
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
             try {
                 Thread.sleep(2000);
-                RegisterMyselfAndGetMyIdPostRequest registerMyselfAndGetMyIdPostRequest = new RegisterMyselfAndGetMyIdPostRequest(userName, phoneNumber);
-                registerRequestResponseJsonWithMyId = registerMyselfAndGetMyIdPostRequest.execute();
+                RegisterMyselfAndGetMyIdPostRequest request = new RegisterMyselfAndGetMyIdPostRequest(userName, phoneNumber);
+                registerRequestResponseJsonWithMyId = request.execute();
 
             } catch (InterruptedException e) {
                 return false;

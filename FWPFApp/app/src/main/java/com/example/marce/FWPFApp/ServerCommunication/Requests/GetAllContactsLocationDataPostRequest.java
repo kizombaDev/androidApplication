@@ -25,7 +25,7 @@ public class GetAllContactsLocationDataPostRequest extends PostRequest {
         setJsonArrayToSend(phoneNumbers);
     }
 
-    public void run() {
+    public JSONArray execute() {
         HttpURLConnection urlConnection = null;
         try {
             URL urlToRequest = new URL(this.requestUrl);
@@ -60,6 +60,7 @@ public class GetAllContactsLocationDataPostRequest extends PostRequest {
                 urlConnection.disconnect();
             }
         }
+        return responseJsonArray;
     }
 
     public void setJsonArrayToSend(String[] phoneNumbers){

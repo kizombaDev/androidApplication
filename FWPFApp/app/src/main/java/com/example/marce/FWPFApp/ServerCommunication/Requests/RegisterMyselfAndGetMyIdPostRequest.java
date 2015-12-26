@@ -19,9 +19,7 @@ public class RegisterMyselfAndGetMyIdPostRequest extends PostRequest {
     private JSONObject jsonToSend;
     private JSONObject responseJson;
 
-
     public RegisterMyselfAndGetMyIdPostRequest(String username, String phoneNumber){
-        //super(requestResponseObservers);
         this.requestUrl = this.serverUrl + urlPath;
         setJsonToSend(username, phoneNumber);
     }
@@ -42,9 +40,6 @@ public class RegisterMyselfAndGetMyIdPostRequest extends PostRequest {
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 InputStream inputStream = urlConnection.getInputStream();
                 responseJson = (JSONObject) this.readJSONObjectFromInputStream(inputStream);
-
-
-                //notifyRequestResponseObserver();
             }
             else{
                 throw new Exception("not implemented");
@@ -65,10 +60,6 @@ public class RegisterMyselfAndGetMyIdPostRequest extends PostRequest {
             }
         }
         return responseJson;
-    }
-
-    private void notifyRequestResponseObserver(){
-        this.requestResponseObservable.notifyObservers(responseJson);
     }
 
     private void setJsonToSend(String username, String phoneNumber){

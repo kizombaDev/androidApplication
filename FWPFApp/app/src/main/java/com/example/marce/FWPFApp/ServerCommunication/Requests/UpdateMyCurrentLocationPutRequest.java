@@ -42,7 +42,7 @@ public class UpdateMyCurrentLocationPutRequest extends PutRequest {
         }
     }
 
-    public void run(){
+    public void execute(){
         HttpURLConnection urlConnection = null;
         try {
             URL urlToRequest = new URL(this.requestUrl);

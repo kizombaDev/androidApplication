@@ -1,14 +1,9 @@
 package com.example.marce.FWPFApp.ServerCommunication;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.location.Location;
 
-import com.example.marce.FWPFApp.Helper.Globals;
 import com.example.marce.FWPFApp.Helper.PhonebookRetriever;
-
-import java.util.ArrayList;
-import java.util.Observer;
 
 /**
  * Created by Paddy on 26.12.2015.
@@ -16,10 +11,7 @@ import java.util.Observer;
 public class ServerCommunicationManager {
     private Context context;
 
-    private ArrayList<Observer> myIdObservers;
-
     public ServerCommunicationManager(){
-        myIdObservers = new ArrayList<Observer>();
 
     }
 
@@ -63,12 +55,8 @@ public class ServerCommunicationManager {
         //new Thread(requestToSend).start();
     }
 
-    public void registerForMyIdResponse(Observer observer){
-        myIdObservers.add(observer);
-    }
-
-    private String getMyId(){
-        SharedPreferences settings = context.getSharedPreferences(Globals.settingFile(), context.MODE_PRIVATE);
-        return settings.getString(Globals.settingUserId(), "-1");
-    }
+    //private String getMyId(){
+    //    SharedPreferences settings = context.getSharedPreferences(Globals.settingFile(), context.MODE_PRIVATE);
+    //    return settings.getString(Globals.settingUserId(), "-1");
+    //}
 }

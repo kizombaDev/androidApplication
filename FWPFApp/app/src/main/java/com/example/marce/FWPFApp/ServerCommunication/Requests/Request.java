@@ -7,9 +7,6 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Observable;
-import java.util.Observer;
 
 /**
  * Created by Paddy on 25.12.2015.
@@ -19,20 +16,8 @@ public abstract class Request {
     protected String requestUrl;
     protected String requestType;
 
-    protected Observable requestResponseObservable = new Observable();
-
     public Request(){
 
-    }
-
-    public Request(ArrayList<Observer> requestResponseObservers) {
-        setRequestResponseObservers(requestResponseObservers);
-    }
-
-    private void setRequestResponseObservers(ArrayList<Observer> requestResponseObservers){
-        for(Observer observer : requestResponseObservers){
-            requestResponseObservable.addObserver(observer);
-        }
     }
 
     protected String readJSONStringFromInputStream(InputStream inputStream){

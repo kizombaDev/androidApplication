@@ -3,27 +3,27 @@ package com.example.marce.FWPFApp.Service;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.marce.FWPFApp.ServerCommunication.ServerCommunicationManager_old;
+import com.example.marce.FWPFApp.Helper.Globals;
+import com.example.marce.FWPFApp.ServerCommunication.Requests.UpdateMyCurrentLocationPutRequest;
 
 public class LocationService extends Service  implements LocationListener {
     private LocationManager locationManager;
 
-    ServerCommunicationManager_old serverCommunicationManager;
+    UpdateMyLocationTask updateMyLocationTask;
+
 
     public LocationService() {
 
-    }
-
-    public void setServerCommunicationManager(ServerCommunicationManager_old serverCommunicationManager) {
-        this.serverCommunicationManager = serverCommunicationManager;
     }
 
     @Override
@@ -63,11 +63,10 @@ public class LocationService extends Service  implements LocationListener {
 
     @Override
     public void onLocationChanged(Location location) {
-        Toast.makeText(this, "Servie: update the Location", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Service: update the Location", Toast.LENGTH_SHORT).show();
 
-        //Patrick
-        if(serverCommunicationManager != null)
-            serverCommunicationManager.updateMyCurrentLocation(location);
+        updateMyLocationTask = new UpdateMyLocationTask(location);
+        updateMyLocationTask.execute((Void) null);
     }
 
     @Override
@@ -83,5 +82,23 @@ public class LocationService extends Service  implements LocationListener {
     @Override
     public void onProviderDisabled(String provider) {
 
+    }
+
+    public class UpdateMyLocationTask extends AsyncTask<Void, Void, Boolean>{
+
+        private final Location location;
+
+        public UpdateMyLocationTask(Location location){
+            this.location = location;
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            SharedPreferences settings = getSharedPreferences(Globals.settingFile(), MODE_PRIVATE);
+            String myId = settings.getString(Globals.settingUserId(), "-1");
+            UpdateMyCurrentLocationPutRequest request = new UpdateMyCurrentLocationPutRequest(myId, location);
+            request.execute();
+            return true;
+        }
     }
 }

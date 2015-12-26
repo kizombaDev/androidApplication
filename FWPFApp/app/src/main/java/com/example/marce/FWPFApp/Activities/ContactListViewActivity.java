@@ -10,6 +10,7 @@ import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -23,8 +24,17 @@ import com.example.marce.FWPFApp.DataObjects.Contact;
 import com.example.marce.FWPFApp.Helper.AngleCalculationHelper;
 import com.example.marce.FWPFApp.Helper.ContactArrayAdapter;
 import com.example.marce.FWPFApp.Helper.Globals;
+import com.example.marce.FWPFApp.Helper.PhonebookRetriever;
 import com.example.marce.FWPFApp.R;
 import com.example.marce.FWPFApp.SampleLocations;
+import com.example.marce.FWPFApp.ServerCommunication.Requests.GetAllContactsLocationDataPostRequest;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class ContactListViewActivity extends AppCompatActivity implements LocationListener, SensorEventListener {
@@ -59,12 +69,75 @@ public class ContactListViewActivity extends AppCompatActivity implements Locati
 
     private void initListView()
     {
-        Contact[] contacts = GenerateSampleContacts();
-        contactArrayAdapter = new ContactArrayAdapter(this, contacts);
+        GetAllContactsLocationDataTask task = new GetAllContactsLocationDataTask(this);
+        task.execute((Void) null);
 
-        final ListView userListView = (ListView) findViewById(R.id.userListView);
-        userListView.setAdapter(contactArrayAdapter);
-        AddOnItemClickListener(userListView);
+        // SO GEHT ES - OHNE DAS SLEEP FLIEGT EINE EXCEPTION - WIESO ??????
+        try{
+            Thread.sleep(4000);
+        }catch (InterruptedException e){
+
+        }
+
+        //Marcel
+        //Contact[] contacts = GenerateSampleContacts();
+        //contactArrayAdapter = new ContactArrayAdapter(this, contacts);
+        //final ListView userListView = (ListView) findViewById(R.id.userListView);
+        //userListView.setAdapter(contactArrayAdapter);
+        //AddOnItemClickListener(userListView);
+    }
+
+
+
+    public class GetAllContactsLocationDataTask extends AsyncTask<Void, Void, Boolean>{
+        private final Context context;
+
+        private Contact[] contactsWithLocation;
+        private JSONArray contactsFromRequestJsonArray;
+
+        public GetAllContactsLocationDataTask(Context context){
+            this.context = context;
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            PhonebookRetriever phonebookRetriever = new PhonebookRetriever(context);
+            String[] allPhonebookNumbers = phonebookRetriever.getAllPhonebookNumbers();
+
+            GetAllContactsLocationDataPostRequest request = new GetAllContactsLocationDataPostRequest(allPhonebookNumbers);
+            contactsFromRequestJsonArray = request.execute();
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean success) {
+            List<Contact> contactsWithLocationList = new ArrayList<Contact>();
+            JSONObject currentJson;
+            for(int i = 0; i < contactsFromRequestJsonArray.length(); i++){
+                try{
+                    currentJson = contactsFromRequestJsonArray.getJSONObject(i);
+                    String userName = currentJson.getString("Username");
+                    double latitude = Double.parseDouble(currentJson.getString("Latitude"));
+                    double longitude = Double.parseDouble(currentJson.getString("Longitude"));
+                    Location location = new Location("");
+                    location.setLatitude(latitude);
+                    location.setLongitude(longitude);
+                    contactsWithLocationList.add(new Contact(userName, location));
+                }
+                catch(JSONException e){
+                    e.printStackTrace();
+                }
+            }
+
+            contactsWithLocation = new Contact[contactsWithLocationList.size()];
+            contactsWithLocation = contactsWithLocationList.toArray(contactsWithLocation);
+
+            contactArrayAdapter = new ContactArrayAdapter(context, contactsWithLocation);
+            final ListView userListView = (ListView) findViewById(R.id.userListView);
+            userListView.setAdapter(contactArrayAdapter);
+            AddOnItemClickListener(userListView);
+
+        }
     }
 
     @NonNull
