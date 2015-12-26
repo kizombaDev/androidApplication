@@ -67,35 +67,19 @@ public class ContactListViewActivity extends AppCompatActivity implements Locati
         initListView();
     }
 
-    private void initListView()
-    {
+    private void initListView() {
         GetAllContactsLocationDataTask task = new GetAllContactsLocationDataTask(this);
         task.execute((Void) null);
-
-        // SO GEHT ES - OHNE DAS SLEEP FLIEGT EINE EXCEPTION - WIESO ??????
-        try{
-            Thread.sleep(4000);
-        }catch (InterruptedException e){
-
-        }
-
-        //Marcel
-        //Contact[] contacts = GenerateSampleContacts();
-        //contactArrayAdapter = new ContactArrayAdapter(this, contacts);
-        //final ListView userListView = (ListView) findViewById(R.id.userListView);
-        //userListView.setAdapter(contactArrayAdapter);
-        //AddOnItemClickListener(userListView);
     }
 
 
-
-    public class GetAllContactsLocationDataTask extends AsyncTask<Void, Void, Boolean>{
+    public class GetAllContactsLocationDataTask extends AsyncTask<Void, Void, Boolean> {
         private final Context context;
 
         private Contact[] contactsWithLocation;
         private JSONArray contactsFromRequestJsonArray;
 
-        public GetAllContactsLocationDataTask(Context context){
+        public GetAllContactsLocationDataTask(Context context) {
             this.context = context;
         }
 
@@ -113,8 +97,8 @@ public class ContactListViewActivity extends AppCompatActivity implements Locati
         protected void onPostExecute(final Boolean success) {
             List<Contact> contactsWithLocationList = new ArrayList<Contact>();
             JSONObject currentJson;
-            for(int i = 0; i < contactsFromRequestJsonArray.length(); i++){
-                try{
+            for (int i = 0; i < contactsFromRequestJsonArray.length(); i++) {
+                try {
                     currentJson = contactsFromRequestJsonArray.getJSONObject(i);
                     String userName = currentJson.getString("Username");
                     double latitude = Double.parseDouble(currentJson.getString("Latitude"));
@@ -123,10 +107,13 @@ public class ContactListViewActivity extends AppCompatActivity implements Locati
                     location.setLatitude(latitude);
                     location.setLongitude(longitude);
                     contactsWithLocationList.add(new Contact(userName, location));
-                }
-                catch(JSONException e){
+                } catch (JSONException e) {
                     e.printStackTrace();
                 }
+            }
+
+            for (Contact c : GenerateSampleContacts()) {
+                contactsWithLocationList.add(c);
             }
 
             contactsWithLocation = new Contact[contactsWithLocationList.size()];
@@ -143,14 +130,6 @@ public class ContactListViewActivity extends AppCompatActivity implements Locati
     @NonNull
     private Contact[] GenerateSampleContacts() {
         return new Contact[]{
-                new Contact("Max Berlin", SampleLocations.getBerlin()),
-                new Contact("Peter London", SampleLocations.getLondon()),
-                new Contact("Tobias Nürnberg", SampleLocations.getNuernberg()),
-                new Contact("Peter Roma", SampleLocations.getRoma()),
-                new Contact("Max Berlin", SampleLocations.getBerlin()),
-                new Contact("Peter London", SampleLocations.getLondon()),
-                new Contact("Tobias Nürnberg", SampleLocations.getNuernberg()),
-                new Contact("Peter Roma", SampleLocations.getRoma()),
                 new Contact("Max Berlin", SampleLocations.getBerlin()),
                 new Contact("Peter London", SampleLocations.getLondon()),
                 new Contact("Tobias Nürnberg", SampleLocations.getNuernberg()),
@@ -177,8 +156,7 @@ public class ContactListViewActivity extends AppCompatActivity implements Locati
 
 
     @Override
-    protected void onPause()
-    {
+    protected void onPause() {
         unregisterSensors();
         super.onPause();
     }
@@ -222,8 +200,8 @@ public class ContactListViewActivity extends AppCompatActivity implements Locati
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
     }
-    private void registerSensors()
-    {
+
+    private void registerSensors() {
         try {
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 5, this);
 
@@ -235,8 +213,7 @@ public class ContactListViewActivity extends AppCompatActivity implements Locati
         mSensorManager.registerListener(this, magnetometer, SensorManager.SENSOR_DELAY_UI);
     }
 
-    private void unregisterSensors()
-    {
+    private void unregisterSensors() {
         try {
             locationManager.removeUpdates(this);
         } catch (SecurityException e) {

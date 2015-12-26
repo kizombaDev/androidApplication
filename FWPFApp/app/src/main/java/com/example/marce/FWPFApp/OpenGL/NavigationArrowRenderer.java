@@ -2,7 +2,6 @@ package com.example.marce.FWPFApp.OpenGL;
 
 import android.opengl.GLSurfaceView.Renderer;
 import android.opengl.GLU;
-import android.util.Log;
 
 import com.example.marce.FWPFApp.Helper.Globals;
 
@@ -38,10 +37,10 @@ public class NavigationArrowRenderer implements Renderer {
             gl.glTranslatef(0.0f, 0.0f, -5.0f);        // move 5 units INTO the screen
 
             gl.glRotatef(targetArrowDegree, 0.0f, 0.0f, 1.0f);
-            gl.glRotatef(deviceInclinationAngle, 1.0f, 0.0f, 0.0f);
+            //gl.glRotatef(deviceInclinationAngle, 1.0f, 0.0f, 0.0f);
             // is the same as moving the camera 5 units away
             navigationArrow.draw(gl);                        // Draw the Arrow
-            Log.i("Marcel", "angle: " + deviceInclinationAngle);
+            //Log.i("Marcel", "angle: " + deviceInclinationAngle);
         }
     }
 

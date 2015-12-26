@@ -13,19 +13,25 @@ public class NavigationArrow {
     private FloatBuffer colorBuffer;
     private ByteBuffer indexBuffer;
 
-    private byte[] indices = {0, 1, 2};
+    private byte[] indices = {
+            0, 1, 2,
+            2, 1, 3
+    };
 
     private float vertices[] = {
-            -1.0f, -1.0f,  0.0f,		// V1 - bottom left
-            1.0f, -1.0f,  0.0f,		// V3 - bottom right
-            0.0f,  1.0f,  0.0f			// V4 - top middle
+            -0.75f, -0.75f, 0.0f,
+            0.0f, -0.3f, 0.1f,
+            0.0f, 0.75f, 0.0f,
+            0.75f, -0.75f, 0.0f,
+            0.0f, -0.3f, -0.1f
     };
 
 
     private float[] colors = { // Colors for the vertices
-            0.0f, 1.0f, 0.0f, 1.0f, // Green 
-            0.0f, 1.0f, 0.0f, 1.0f, // Green 
-            0.0f, 0.0f, 1.0f, 1.0f  // Blue 
+            0.0f, 0.0f, 1.0f, 1.0f,
+            0.0f, 0.0f, 1.0f, 1.0f,
+            0.0f, 0.0f, 1.0f, 1.0f,
+            0.0f, 0.0f, 1.0f, 1.0f
     };
 
     public NavigationArrow() {
