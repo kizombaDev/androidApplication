@@ -23,6 +23,10 @@ import android.widget.TextView;
 
 import com.example.marce.FWPFApp.Helper.Globals;
 import com.example.marce.FWPFApp.R;
+import com.example.marce.FWPFApp.ServerCommunication.Requests.RegisterMyselfAndGetMyIdPostRequest;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class RegistrationActivity extends AppCompatActivity {
 
@@ -32,6 +36,7 @@ public class RegistrationActivity extends AppCompatActivity {
     private EditText phoneNumberView;
     private View mProgressView;
     private View mLoginFormView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,10 +138,12 @@ public class RegistrationActivity extends AppCompatActivity {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
+
             registerTask = new UserRegisterTask(userName, phoneNumber);
             registerTask.execute((Void) null);
         }
     }
+
 
     private boolean isUserNameValid(String userName) {
         return true;
@@ -190,30 +197,29 @@ public class RegistrationActivity extends AppCompatActivity {
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
-    public class UserRegisterTask extends AsyncTask<Void, Void, Boolean> {
+    public class UserRegisterTask extends AsyncTask<Void, Void, Boolean>  {
 
         private final String userName;
         private final String phoneNumber;
 
+        JSONObject registerRequestResponseJsonWithMyId;
+
         UserRegisterTask(String userName, String phoneNumber) {
             this.userName = userName;
             this.phoneNumber = phoneNumber;
+            //this.requestResponseJsonWithMyId = null;
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
-
-
             try {
-                // Simulate network access.
                 Thread.sleep(2000);
-
-
+                RegisterMyselfAndGetMyIdPostRequest registerMyselfAndGetMyIdPostRequest = new RegisterMyselfAndGetMyIdPostRequest(userName, phoneNumber);
+                registerRequestResponseJsonWithMyId = registerMyselfAndGetMyIdPostRequest.execute();
 
             } catch (InterruptedException e) {
                 return false;
             }
-
             return true;
         }
 
@@ -223,11 +229,20 @@ public class RegistrationActivity extends AppCompatActivity {
             showProgress(false);
 
             if (success) {
+                String myId = "-1";
+                try {
+                    myId = registerRequestResponseJsonWithMyId.getString("Id");
+                }
+                catch(JSONException e){
+                    e.printStackTrace();
+                }
+
                 SharedPreferences settings = getSharedPreferences(Globals.settingFile(), MODE_PRIVATE);
                 SharedPreferences.Editor editor = settings.edit();
                 editor.putString(Globals.setttingUserName(), userName);
                 editor.putString(Globals.setttingPhoneNumber(), phoneNumber);
                 editor.putBoolean(Globals.setttingIsUserRegistered(), true);
+                editor.putString(Globals.settingUserId(), myId);
                 editor.commit();
 
                 setResult(Activity.RESULT_OK);

@@ -11,18 +11,18 @@ import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.marce.FWPFApp.ServerCommunication.ServerCommunicationManager;
+import com.example.marce.FWPFApp.ServerCommunication.ServerCommunicationManager_old;
 
 public class LocationService extends Service  implements LocationListener {
     private LocationManager locationManager;
 
-    ServerCommunicationManager serverCommunicationManager;
+    ServerCommunicationManager_old serverCommunicationManager;
 
     public LocationService() {
 
     }
 
-    public void setServerCommunicationManager(ServerCommunicationManager serverCommunicationManager) {
+    public void setServerCommunicationManager(ServerCommunicationManager_old serverCommunicationManager) {
         this.serverCommunicationManager = serverCommunicationManager;
     }
 

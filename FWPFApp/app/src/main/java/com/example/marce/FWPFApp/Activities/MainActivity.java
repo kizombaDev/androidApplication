@@ -31,7 +31,8 @@ public class MainActivity extends AppCompatActivity {
         //Patrick
         serverCommunicationManager = new ServerCommunicationManager();
         serverCommunicationManager.setContext(this);
-        serverCommunicationManager.testServerCommunicationManager();
+
+        //serverCommunicationManager.test();
 
 
         Intent locationServiceIntent = new Intent(this, LocationService.class);

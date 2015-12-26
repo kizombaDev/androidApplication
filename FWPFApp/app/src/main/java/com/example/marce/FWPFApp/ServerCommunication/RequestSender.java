@@ -1,7 +1,5 @@
 package com.example.marce.FWPFApp.ServerCommunication;
 
-import android.util.Log;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -48,17 +46,6 @@ public class RequestSender implements Runnable {
             e.printStackTrace();
         }
         return returnJSONString;
-            //jsonToReturn = new JSONObject(responseStrBuilder.toString());
-
-            //returns the json object
-            //return jsonObject;
-
-        //} catch (IOException e) {
-        //    e.printStackTrace();
-        //} catch (JSONException e) {
-        //    e.printStackTrace();
-        //}
-        //return jsonToReturn;
     }
 
     public JSONArray readJSONArrayFromInputStream(InputStream inputStream){
@@ -117,21 +104,23 @@ public class RequestSender implements Runnable {
                 // handle any other errors, like 404, 500,..
             }
 
-            //Get Response
-            InputStream inputStream = urlConnection.getInputStream();
 
 
-            Object responseJSON;
-            if(JSONToSend instanceof JSONObject){
-                responseJSON = (JSONObject) readJSONObjectFromInputStream(inputStream);
+
+            if(requestType == "POST") {
+                //Get Response
+                InputStream inputStream = urlConnection.getInputStream();
+
+                Object responseJSON;
+                if (JSONToSend instanceof JSONObject) {
+                    responseJSON = (JSONObject) readJSONObjectFromInputStream(inputStream);
+                } else if (JSONToSend instanceof JSONArray) {
+                    responseJSON = (JSONArray) readJSONArrayFromInputStream(inputStream);
+                } else if (JSONToSend == null) {
+                    responseJSON = (JSONObject) readJSONObjectFromInputStream(inputStream);
+                }
             }
-            else if(JSONToSend instanceof JSONArray){
-                responseJSON = (JSONArray) readJSONArrayFromInputStream(inputStream);
-            } else if(JSONToSend == null){
-                responseJSON = (JSONObject) readJSONObjectFromInputStream(inputStream);
-            }
 
-            Log.e("asdölfk", "asdölkfj");
 
 
 
