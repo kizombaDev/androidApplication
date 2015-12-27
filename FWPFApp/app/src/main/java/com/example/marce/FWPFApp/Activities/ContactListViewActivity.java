@@ -189,10 +189,14 @@ public class ContactListViewActivity extends AppCompatActivity implements Locati
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        angleCalculationHelper.setSensorEvent(event);
-        if (angleCalculationHelper.hasDeviceDegree()) {
-            float deviceDegree = angleCalculationHelper.getDeviceDegree();
-            contactArrayAdapter.deviceDegreeChanged(deviceDegree);
+        //sauber????
+        // contactarrayadapter unter uumständen noch nicht initialisiert zu dem zeitpunkt, weil das erst in onpostexecute vom asynctask passiert
+        if(contactArrayAdapter != null){
+            angleCalculationHelper.setSensorEvent(event);
+            if (angleCalculationHelper.hasDeviceDegree()) {
+                float deviceDegree = angleCalculationHelper.getDeviceDegree();
+                contactArrayAdapter.deviceDegreeChanged(deviceDegree);
+            }
         }
     }
 
