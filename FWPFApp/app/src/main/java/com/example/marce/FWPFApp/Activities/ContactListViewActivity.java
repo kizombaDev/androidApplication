@@ -68,6 +68,8 @@ public class ContactListViewActivity extends AppCompatActivity implements Locati
     }
 
     private void initListView() {
+
+        //Todo do periodically to get the location updates of the other contacts
         GetAllContactsLocationDataTask task = new GetAllContactsLocationDataTask(this);
         task.execute((Void) null);
     }
@@ -103,6 +105,7 @@ public class ContactListViewActivity extends AppCompatActivity implements Locati
                     String userName = currentJson.getString("Username");
                     double latitude = Double.parseDouble(currentJson.getString("Latitude"));
                     double longitude = Double.parseDouble(currentJson.getString("Longitude"));
+                    String id = currentJson.getString("Id");
                     Location location = new Location("");
                     location.setLatitude(latitude);
                     location.setLongitude(longitude);

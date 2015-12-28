@@ -20,7 +20,7 @@ public class GetContactLocationDataPostRequest extends PostRequest {
         this.requestUrl = serverUrl + urlPath + contactId;
     }
 
-    public void run() {
+    public JSONObject execute() {
         HttpURLConnection urlConnection = null;
         try {
             URL urlToRequest = new URL(this.requestUrl);
@@ -52,5 +52,6 @@ public class GetContactLocationDataPostRequest extends PostRequest {
                 urlConnection.disconnect();
             }
         }
+        return responseJson;
     }
 }

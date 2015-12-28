@@ -8,6 +8,7 @@ public class Contact implements Parcelable {
 
     private String name;
     private Location location;
+    private String id;
 
     private String phoneNumber;
 
@@ -17,14 +18,16 @@ public class Contact implements Parcelable {
     }
 
     //Patrick
-    public Contact(String name, String phoneNumber, Location location){
+    public Contact(String id, String name, Location location){
         this(name, location);
-        this.phoneNumber = phoneNumber;
+        this.id = id;
     }
 
     public Location getLocation() {
         return location;
     }
+
+    public String getId() { return id;}
 
     public void setLocation(Location location) {
         this.location = location;

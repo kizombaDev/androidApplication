@@ -12,6 +12,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.opengl.GLSurfaceView;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -22,6 +23,9 @@ import com.example.marce.FWPFApp.Helper.AngleCalculationHelper;
 import com.example.marce.FWPFApp.Helper.CameraView;
 import com.example.marce.FWPFApp.Helper.Globals;
 import com.example.marce.FWPFApp.OpenGL.NavigationArrowRenderer;
+import com.example.marce.FWPFApp.ServerCommunication.Requests.GetContactLocationDataPostRequest;
+
+import org.json.JSONObject;
 
 public class NavigationActivity extends AppCompatActivity implements LocationListener, SensorEventListener {
 
@@ -181,5 +185,20 @@ public class NavigationActivity extends AppCompatActivity implements LocationLis
         }
 
         mSensorManager.unregisterListener(this);
+    }
+
+    //todo to implement
+    public class GetContactLocationDataTask extends AsyncTask<Void, Void, Boolean> {
+
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            GetContactLocationDataPostRequest request = new GetContactLocationDataPostRequest(contact.getId());
+            JSONObject responseJson = request.execute();
+
+
+
+            return true;
+        }
     }
 }
