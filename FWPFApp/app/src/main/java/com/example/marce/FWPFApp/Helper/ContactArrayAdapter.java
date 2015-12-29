@@ -15,6 +15,8 @@ import android.widget.TextView;
 import com.example.marce.FWPFApp.DataObjects.Contact;
 import com.example.marce.FWPFApp.R;
 
+import java.util.List;
+
 
 public class ContactArrayAdapter extends ArrayAdapter<Contact> {
 
@@ -23,18 +25,18 @@ public class ContactArrayAdapter extends ArrayAdapter<Contact> {
     private final RowObject[] rowObjects;
     private Location currentLocation;
 
-    public ContactArrayAdapter(Context context, Contact[] contacts) {
+    public ContactArrayAdapter(Context context, List<Contact> contacts) {
         super(context, -1, contacts);
         this.context = context;
-        this.rowObjects = new RowObject[contacts.length];
+        this.rowObjects = new RowObject[contacts.size()];
 
         initRowObjects(contacts);
     }
 
-    private void initRowObjects(Contact[] contacts) {
+    private void initRowObjects(List<Contact> contacts) {
         for (int i = 0; i < rowObjects.length; i++) {
             rowObjects[i] = new RowObject();
-            rowObjects[i].setContact(contacts[i]);
+            rowObjects[i].setContact(contacts.get(i));
         }
     }
 
@@ -47,7 +49,11 @@ public class ContactArrayAdapter extends ArrayAdapter<Contact> {
         TextView textView = (TextView) rowView.findViewById(R.id.ContactNameLabel);
         TextView distanceView = (TextView) rowView.findViewById(R.id.distance);
         rowObjects[position].setDistanceTextView(distanceView);
-        distanceView.setText(R.string.NoGPSSingal);
+        if (currentLocation == null) {
+            distanceView.setText(R.string.NoGPSSingal);
+        } else {
+            updateDistanceOfRow(currentLocation, position);
+        }
         textView.setText(rowObjects[position].getContact().getName());
 
         ImageView iconBlackView = (ImageView) rowView.findViewById(R.id.iconBlack);
@@ -61,17 +67,21 @@ public class ContactArrayAdapter extends ArrayAdapter<Contact> {
     private void updateDistance(Location location) {
 
         for (int i = 0; i < rowObjects.length; i++) {
-            String distanceText;
-            if (location == null) {
-                distanceText = "";
-            } else {
-                float distance = rowObjects[i].getContact().distanceToLocation(location);
-                distance = distance / 1000;
-                distanceText = String.format("%.1f", distance) + " km";
-            }
-            rowObjects[i].getDistanceTextView().setVisibility(View.VISIBLE);
-            rowObjects[i].getDistanceTextView().setText(distanceText);
+            updateDistanceOfRow(location, i);
         }
+    }
+
+    private void updateDistanceOfRow(Location location, int position) {
+        String distanceText;
+        if (location == null) {
+            distanceText = "";
+        } else {
+            float distance = rowObjects[position].getContact().distanceToLocation(location);
+            distance = distance / 1000;
+            distanceText = String.format("%.1f", distance) + " km";
+        }
+        rowObjects[position].getDistanceTextView().setVisibility(View.VISIBLE);
+        rowObjects[position].getDistanceTextView().setText(distanceText);
     }
 
     public void locationChanged(Location location) {

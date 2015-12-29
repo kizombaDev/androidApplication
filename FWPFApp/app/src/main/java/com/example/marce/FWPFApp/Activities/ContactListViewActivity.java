@@ -49,6 +49,7 @@ public class ContactListViewActivity extends AppCompatActivity implements Locati
     private Sensor magnetometer;
     private SensorManager mSensorManager;
     private LocationManager locationManager;
+    private List<Contact> contactsWithLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,7 +113,6 @@ public class ContactListViewActivity extends AppCompatActivity implements Locati
     public class GetAllContactsLocationDataTask extends AsyncTask<Void, Void, Boolean> {
         private final Context context;
 
-        private Contact[] contactsWithLocation;
         private JSONArray contactsFromRequestJsonArray;
 
         public GetAllContactsLocationDataTask(Context context) {
@@ -153,14 +153,20 @@ public class ContactListViewActivity extends AppCompatActivity implements Locati
                 contactsWithLocationList.add(c);
             }
 
-            contactsWithLocation = new Contact[contactsWithLocationList.size()];
-            contactsWithLocation = contactsWithLocationList.toArray(contactsWithLocation);
-
-            contactArrayAdapter = new ContactArrayAdapter(context, contactsWithLocation);
             final ListView userListView = (ListView) findViewById(R.id.userListView);
-            userListView.setAdapter(contactArrayAdapter);
-            AddOnItemClickListener(userListView);
 
+            if (contactsWithLocation == null) {
+                contactsWithLocation = new ArrayList<>();
+                contactsWithLocation.addAll(contactsWithLocationList);
+                contactArrayAdapter = new ContactArrayAdapter(context, contactsWithLocation);
+                userListView.setAdapter(contactArrayAdapter);
+                AddOnItemClickListener(userListView);
+            } else {
+                contactsWithLocation.clear();
+                contactsWithLocation.addAll(contactsWithLocationList);
+                ContactArrayAdapter contactArrayAdapter = (ContactArrayAdapter) userListView.getAdapter();
+                contactArrayAdapter.notifyDataSetChanged();
+            }
         }
     }
 
