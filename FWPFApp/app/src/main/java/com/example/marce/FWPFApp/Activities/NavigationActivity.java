@@ -14,6 +14,7 @@ import android.location.LocationManager;
 import android.opengl.GLSurfaceView;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.ViewGroup.LayoutParams;
@@ -25,7 +26,8 @@ import com.example.marce.FWPFApp.Helper.Globals;
 import com.example.marce.FWPFApp.OpenGL.NavigationArrowRenderer;
 import com.example.marce.FWPFApp.ServerCommunication.Requests.GetContactLocationDataPostRequest;
 
-import org.json.JSONObject;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class NavigationActivity extends AppCompatActivity implements LocationListener, SensorEventListener {
 
@@ -47,7 +49,10 @@ public class NavigationActivity extends AppCompatActivity implements LocationLis
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         Intent intent = this.getIntent();
+
+
         contact = intent.getParcelableExtra(Globals.navigationActitivyIntend());
+
 
         locationManager = (LocationManager)
                 getSystemService(Context.LOCATION_SERVICE);
@@ -67,6 +72,38 @@ public class NavigationActivity extends AppCompatActivity implements LocationLis
 
         initGLView();
         initCameraView();
+
+        startTriggeringGetContactLocationDataPeriodicallyToUpdateView();
+    }
+
+    private void startTriggeringGetContactLocationDataPeriodicallyToUpdateView(){
+        final Handler handler = new Handler();
+        Timer timer = new Timer();
+        TimerTask doAsynchronousTask = new TimerTask()
+        {
+            @Override
+            public void run() {
+                handler.post(new Runnable() {
+                    public void run() {
+                        try
+                        {
+                            triggerGetContactLocationData();
+
+                        }
+                        catch (Exception e)
+                        {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+            }
+        };
+        timer.schedule(doAsynchronousTask, 0, 5000);
+    }
+
+    private void triggerGetContactLocationData(){
+        GetContactLocationDataTask task = new GetContactLocationDataTask();
+        task.execute((Void) null);
     }
 
     private void initCameraView() {
@@ -187,18 +224,26 @@ public class NavigationActivity extends AppCompatActivity implements LocationLis
         mSensorManager.unregisterListener(this);
     }
 
-    //todo to implement
+
     public class GetContactLocationDataTask extends AsyncTask<Void, Void, Boolean> {
 
+        private Location responseLocation;
 
         @Override
         protected Boolean doInBackground(Void... params) {
             GetContactLocationDataPostRequest request = new GetContactLocationDataPostRequest(contact.getId());
-            JSONObject responseJson = request.execute();
-
-
-
+            responseLocation = request.execute();
             return true;
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean success) {
+            if(responseLocation != null) {
+                contact.setLocation(responseLocation);
+                updateGLArrow();
+
+                Log.i("got new location", "arrow updated");
+            }
         }
     }
 }

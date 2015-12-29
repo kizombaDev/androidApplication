@@ -5,10 +5,10 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class Contact implements Parcelable {
-
+    private String id;
     private String name;
     private Location location;
-    private String id;
+
 
     private String phoneNumber;
 
@@ -51,6 +51,7 @@ public class Contact implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
         dest.writeString(name);
         dest.writeParcelable(location, flags);
     }
@@ -58,7 +59,7 @@ public class Contact implements Parcelable {
     public static final Parcelable.Creator<Contact> CREATOR
             = new Parcelable.Creator<Contact>() {
         public Contact createFromParcel(Parcel in) {
-            return new Contact(in.readString(), (Location)in.readParcelable(Location.class.getClassLoader()));
+            return new Contact(in.readString(), in.readString(), (Location)in.readParcelable(Location.class.getClassLoader()));
         }
 
         public Contact[] newArray(int size) {

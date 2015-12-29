@@ -12,6 +12,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -35,6 +36,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 public class ContactListViewActivity extends AppCompatActivity implements LocationListener, SensorEventListener {
@@ -64,15 +67,46 @@ public class ContactListViewActivity extends AppCompatActivity implements Locati
         magnetometer = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
         angleCalculationHelper = new AngleCalculationHelper(300);
 
-        initListView();
+        //initListView();
+
+
+
+        //triggerGetAllContactsLocationData();
+        startTriggeringGetAllContactsLocationDataPeriodicallyToFillListView(); //// TODO: mit dieser zeile zeigt er immer wieder no GPS signal in der view bei allen elementen an weil er immer wieder in die methode "getView"
+        // vom contactArrayAdapter geht nachdem der asynctask ausgeführt ist. hab noch nicht rausgefunden warum er das tut
     }
 
-    private void initListView() {
 
-        //Todo do periodically to get the location updates of the other contacts
+    private void startTriggeringGetAllContactsLocationDataPeriodicallyToFillListView(){
+        final Handler handler = new Handler();
+        Timer timer = new Timer();
+        TimerTask doAsynchronousTask = new TimerTask()
+        {
+            @Override
+            public void run() {
+                handler.post(new Runnable() {
+                    public void run() {
+                        try
+                        {
+                            triggerGetAllContactsLocationData();
+
+                        }
+                        catch (Exception e)
+                        {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+            }
+        };
+        timer.schedule(doAsynchronousTask, 0, 5000);
+    }
+
+    private void triggerGetAllContactsLocationData(){
         GetAllContactsLocationDataTask task = new GetAllContactsLocationDataTask(this);
         task.execute((Void) null);
     }
+
 
 
     public class GetAllContactsLocationDataTask extends AsyncTask<Void, Void, Boolean> {
@@ -109,7 +143,7 @@ public class ContactListViewActivity extends AppCompatActivity implements Locati
                     Location location = new Location("");
                     location.setLatitude(latitude);
                     location.setLongitude(longitude);
-                    contactsWithLocationList.add(new Contact(userName, location));
+                    contactsWithLocationList.add(new Contact(id, userName, location));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

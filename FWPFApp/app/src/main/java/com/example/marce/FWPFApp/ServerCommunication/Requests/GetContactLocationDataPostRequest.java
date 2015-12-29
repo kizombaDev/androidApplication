@@ -1,5 +1,7 @@
 package com.example.marce.FWPFApp.ServerCommunication.Requests;
 
+import android.location.Location;
+
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -20,8 +22,9 @@ public class GetContactLocationDataPostRequest extends PostRequest {
         this.requestUrl = serverUrl + urlPath + contactId;
     }
 
-    public JSONObject execute() {
+    public Location execute() {
         HttpURLConnection urlConnection = null;
+        Location locationToReturn = null;
         try {
             URL urlToRequest = new URL(this.requestUrl);
             urlConnection = (HttpURLConnection) urlToRequest.openConnection();
@@ -33,6 +36,10 @@ public class GetContactLocationDataPostRequest extends PostRequest {
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 InputStream inputStream = urlConnection.getInputStream();
                 responseJson = (JSONObject) readJSONObjectFromInputStream(inputStream);
+
+                locationToReturn = new Location("");
+                locationToReturn.setLatitude(Double.parseDouble(responseJson.getString("Latitude")));
+                locationToReturn.setLongitude(Double.parseDouble(responseJson.getString("Longitude")));
             }
             else{
                 throw new Exception("not implemented");
@@ -52,6 +59,6 @@ public class GetContactLocationDataPostRequest extends PostRequest {
                 urlConnection.disconnect();
             }
         }
-        return responseJson;
+        return locationToReturn;
     }
 }
