@@ -42,6 +42,7 @@ public class NavigationActivity extends AppCompatActivity implements LocationLis
     private AngleCalculationHelper angleCalculationHelper;
     private Contact contact;
     private float currentDeviceInclinationAngle;
+    private Timer contactUpdateTimer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,13 +73,11 @@ public class NavigationActivity extends AppCompatActivity implements LocationLis
 
         initGLView();
         initCameraView();
-
-        startTriggeringGetContactLocationDataPeriodicallyToUpdateView();
     }
 
-    private void startTriggeringGetContactLocationDataPeriodicallyToUpdateView(){
+    private void startContactUpdateTrigger() {
         final Handler handler = new Handler();
-        Timer timer = new Timer();
+        contactUpdateTimer = new Timer();
         TimerTask doAsynchronousTask = new TimerTask()
         {
             @Override
@@ -98,7 +97,12 @@ public class NavigationActivity extends AppCompatActivity implements LocationLis
                 });
             }
         };
-        timer.schedule(doAsynchronousTask, 0, 5000);
+        contactUpdateTimer.schedule(doAsynchronousTask, 0, 5000);
+    }
+
+    private void stopContactUpdateTrigger() {
+        contactUpdateTimer.cancel();
+        contactUpdateTimer.purge();
     }
 
     private void triggerGetContactLocationData(){
@@ -128,6 +132,7 @@ public class NavigationActivity extends AppCompatActivity implements LocationLis
         super.onPause();
         unregisterSensors();
         glView.onPause();
+        stopContactUpdateTrigger();
     }
 
     @Override
@@ -135,6 +140,7 @@ public class NavigationActivity extends AppCompatActivity implements LocationLis
         super.onResume();
         registerSensors();
         glView.onResume();
+        startContactUpdateTrigger();
     }
 
     @Override

@@ -50,6 +50,7 @@ public class ContactListViewActivity extends AppCompatActivity implements Locati
     private SensorManager mSensorManager;
     private LocationManager locationManager;
     private List<Contact> contactsWithLocation;
+    private Timer contactUpdateTimer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,19 +69,12 @@ public class ContactListViewActivity extends AppCompatActivity implements Locati
         magnetometer = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
         angleCalculationHelper = new AngleCalculationHelper(300);
 
-        //initListView();
-
-
-
-        //triggerGetAllContactsLocationData();
-        startTriggeringGetAllContactsLocationDataPeriodicallyToFillListView(); //// TODO: mit dieser zeile zeigt er immer wieder no GPS signal in der view bei allen elementen an weil er immer wieder in die methode "getView"
-        // vom contactArrayAdapter geht nachdem der asynctask ausgeführt ist. hab noch nicht rausgefunden warum er das tut
     }
 
 
-    private void startTriggeringGetAllContactsLocationDataPeriodicallyToFillListView(){
+    private void startContactUpdateTrigger() {
         final Handler handler = new Handler();
-        Timer timer = new Timer();
+        contactUpdateTimer = new Timer();
         TimerTask doAsynchronousTask = new TimerTask()
         {
             @Override
@@ -100,14 +94,18 @@ public class ContactListViewActivity extends AppCompatActivity implements Locati
                 });
             }
         };
-        timer.schedule(doAsynchronousTask, 0, 5000);
+        contactUpdateTimer.schedule(doAsynchronousTask, 0, 5000);
+    }
+
+    private void stopContactUpdateTrigger() {
+        contactUpdateTimer.cancel();
+        contactUpdateTimer.purge();
     }
 
     private void triggerGetAllContactsLocationData(){
         GetAllContactsLocationDataTask task = new GetAllContactsLocationDataTask(this);
         task.execute((Void) null);
     }
-
 
 
     public class GetAllContactsLocationDataTask extends AsyncTask<Void, Void, Boolean> {
@@ -202,12 +200,14 @@ public class ContactListViewActivity extends AppCompatActivity implements Locati
     protected void onPause() {
         unregisterSensors();
         super.onPause();
+        stopContactUpdateTrigger();
     }
 
     @Override
     protected void onResume() {
         registerSensors();
         super.onResume();
+        startContactUpdateTrigger();
     }
 
     @Override
