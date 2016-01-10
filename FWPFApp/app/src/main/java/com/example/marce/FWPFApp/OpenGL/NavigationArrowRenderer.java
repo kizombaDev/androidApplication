@@ -36,11 +36,14 @@ public class NavigationArrowRenderer implements Renderer {
             // Drawing
             gl.glTranslatef(0.0f, 0.0f, -5.0f);        // move 5 units INTO the screen
 
+            //unter 300Grad wird der Pfeil nicht mehr schön dargestellt
+            if (deviceInclinationAngle < 300 && deviceInclinationAngle > 90) {
+                deviceInclinationAngle = 300;
+            }
             gl.glRotatef(targetArrowDegree, 0.0f, 0.0f, 1.0f);
-            //gl.glRotatef(deviceInclinationAngle, 1.0f, 0.0f, 0.0f);
+            gl.glRotatef(deviceInclinationAngle, 1.0f, 0.0f, 0.0f);
             // is the same as moving the camera 5 units away
             navigationArrow.draw(gl);                        // Draw the Arrow
-            //Log.i("Marcel", "angle: " + deviceInclinationAngle);
         }
     }
 

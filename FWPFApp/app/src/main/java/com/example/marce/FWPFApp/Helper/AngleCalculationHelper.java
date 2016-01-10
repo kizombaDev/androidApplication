@@ -3,16 +3,16 @@ package com.example.marce.FWPFApp.Helper;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
-import android.util.Log;
 
 public class AngleCalculationHelper {
     private float deviceDegree;
     private boolean hasDeviceDegree = false;
     private long time;
     private long sensorUpdateMilliSeconds;
-    float[] mGravity = null;
-    float[] mGeomagnetic = null;
+    private float[] mGravity = null;
+    private float[] mGeomagnetic = null;
     private float deviceInclinationAngle;
+    private float[] orientation = new float[3];
 
     public AngleCalculationHelper(long sensorUpdateMilliSeconds) {
         this.sensorUpdateMilliSeconds = sensorUpdateMilliSeconds;
@@ -37,7 +37,7 @@ public class AngleCalculationHelper {
                 hasDeviceDegree = true;
                 this.deviceDegree = (float) (Math.toDegrees(orientation[0]) + 360) % 360;
                 this.deviceInclinationAngle = (float) (Math.toDegrees(orientation[1]) + 360) % 360;
-                Log.i("Marcel", "inclianation: " + deviceInclinationAngle);
+                //Log.i("Marcel", "inclianation: " + deviceInclinationAngle);
 
             }
         }
@@ -54,4 +54,5 @@ public class AngleCalculationHelper {
     public float getDeviceInclinationAngle() {
         return deviceInclinationAngle;
     }
+
 }
