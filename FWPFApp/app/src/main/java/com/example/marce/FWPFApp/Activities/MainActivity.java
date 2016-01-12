@@ -29,8 +29,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         //Patrick
-        serverCommunicationManager = new ServerCommunicationManager();
-        serverCommunicationManager.setContext(this);
+        //serverCommunicationManager = new ServerCommunicationManager();
+        //serverCommunicationManager.setContext(this);
 
         //serverCommunicationManager.test();
 
