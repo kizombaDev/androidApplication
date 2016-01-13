@@ -9,7 +9,6 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 public class NavigationArrowRenderer implements Renderer {
-
     private NavigationArrow navigationArrow;		// the navigationArrow
 
     private float targetArrowDegree;
@@ -29,9 +28,15 @@ public class NavigationArrowRenderer implements Renderer {
         // clear Screen and Depth Buffer
         gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 
+        gl.glMatrixMode(GL10.GL_MODELVIEW); // Activate Model View Matrix
+
         // Reset the Modelview Matrix
         gl.glLoadIdentity();
 
+        drawArrow(gl);
+    }
+
+    private void drawArrow(GL10 gl) {
         if (hasDegree) {
             // Drawing
             gl.glTranslatef(0.0f, 0.0f, -5.0f);        // move 5 units INTO the screen
@@ -54,20 +59,20 @@ public class NavigationArrowRenderer implements Renderer {
         }
 
         gl.glViewport(0, 0, width, height); 	//Reset The Current Viewport
-        gl.glMatrixMode(GL10.GL_PROJECTION); 	//Select The Projection Matrix
+        gl.glMatrixMode(GL10.GL_PROJECTION);    // Activate Projection Matrix
         gl.glLoadIdentity(); 					//Reset The Projection Matrix
 
-        //Calculate The Aspect Ratio Of The Window
-        GLU.gluPerspective(gl, 45.0f, (float)width / (float)height, 0.1f, 100.0f);
+        updateArrow(gl, width, height);
+    }
 
-        gl.glMatrixMode(GL10.GL_MODELVIEW); 	//Select The Modelview Matrix
-        gl.glLoadIdentity(); 					//Reset The Modelview Matrix
+    private void updateArrow(GL10 gl, int width, int height) {
+        //Calculate The Aspect Ratio Of The Window
+        GLU.gluPerspective(gl, 45.0f, (float) width / (float)height, 0.1f, 100.0f);
     }
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
     }
-
 
     public void updateArrowAngle(float nextArrowDegree) {
         this.targetArrowDegree = 360 - nextArrowDegree;

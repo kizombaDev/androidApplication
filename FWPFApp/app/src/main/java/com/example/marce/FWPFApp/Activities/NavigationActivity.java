@@ -24,6 +24,7 @@ import com.example.marce.FWPFApp.Helper.AngleCalculationHelper;
 import com.example.marce.FWPFApp.Helper.CameraView;
 import com.example.marce.FWPFApp.Helper.Globals;
 import com.example.marce.FWPFApp.OpenGL.NavigationArrowRenderer;
+import com.example.marce.FWPFApp.OpenGL.NavigationTextureRenderer;
 import com.example.marce.FWPFApp.ServerCommunication.Requests.GetContactLocationDataPostRequest;
 
 import java.util.Timer;
@@ -33,6 +34,7 @@ public class NavigationActivity extends AppCompatActivity implements LocationLis
 
     private GLSurfaceView glView;
     private NavigationArrowRenderer navigationArrowRenderer;
+    private NavigationTextureRenderer navigationTextureRenderer;
     private Location currentDeviceLocation;
     private LocationManager locationManager;
     private SensorManager mSensorManager;
@@ -124,7 +126,15 @@ public class NavigationActivity extends AppCompatActivity implements LocationLis
         glView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
         navigationArrowRenderer = new NavigationArrowRenderer();
         glView.setRenderer(navigationArrowRenderer);
-        setContentView(glView);
+        addContentView(glView, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+
+        glView = new GLSurfaceView(this);
+        glView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
+        glView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
+        navigationTextureRenderer = new NavigationTextureRenderer(this);
+        navigationTextureRenderer.setContactName(contact.getName());
+        glView.setRenderer(navigationTextureRenderer);
+        addContentView(glView, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
     }
 
     @Override
@@ -147,7 +157,7 @@ public class NavigationActivity extends AppCompatActivity implements LocationLis
     public void onLocationChanged(Location location) {
         this.currentDeviceLocation = location;
         updateGLArrow();
-
+        updateGLContactInformation();
     }
 
     @Override
@@ -168,13 +178,11 @@ public class NavigationActivity extends AppCompatActivity implements LocationLis
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-
         angleCalculationHelper.setSensorEvent(event);
         if (angleCalculationHelper.hasDeviceDegree()) {
             this.currentDeviceAngle = angleCalculationHelper.getDeviceDegree();
             navigationArrowRenderer.updateInclinationAngle(angleCalculationHelper.getDeviceInclinationAngle());
             updateGLArrow();
-
         }
     }
 
@@ -205,7 +213,15 @@ public class NavigationActivity extends AppCompatActivity implements LocationLis
         }
 
         navigationArrowRenderer.updateArrowAngle(nextArrowAngle);
+    }
 
+    private void updateGLContactInformation() {
+        if (currentDeviceLocation == null) {
+            return;
+        }
+
+        navigationTextureRenderer.setDistanceInMeters(currentDeviceLocation.distanceTo(contact.getLocation()));
+        navigationTextureRenderer.setLastUpdate("N/A");
     }
 
     private void registerSensors() {
