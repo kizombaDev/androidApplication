@@ -4,11 +4,10 @@
 package com.example.marce.FWPFApp.OpenGL.Text;
 
 import android.app.Activity;
-import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 
-public class Texample extends Activity
+public class NavigationTextureRenderer extends Activity
 {
    private GLSurfaceView glView;
 
@@ -39,15 +38,5 @@ public class Texample extends Activity
       // If you de-allocated graphic objects for onPause()
       // this is a good place to re-allocate them.
       glView.onResume();
-   }
-}
-
-class TexampleSurfaceView extends GLSurfaceView {
-
-   public TexampleSurfaceView(Context context){
-      super( context );
-
-      // Set the Renderer for drawing on the GLSurfaceView
-      setRenderer( new TexampleRenderer( context ) );
    }
 }
