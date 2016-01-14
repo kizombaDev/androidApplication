@@ -2,6 +2,8 @@ package com.example.marce.FWPFApp.ServerCommunication.Requests;
 
 import android.location.Location;
 
+import com.example.marce.FWPFApp.DataObjects.Contact;
+
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -10,6 +12,9 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by Paddy on 25.12.2015.
@@ -22,9 +27,8 @@ public class GetContactLocationDataPostRequest extends PostRequest {
         this.requestUrl = serverUrl + urlPath + contactId;
     }
 
-    public Location execute() {
+    public void execute(Contact contact) {
         HttpURLConnection urlConnection = null;
-        Location locationToReturn = null;
         try {
             URL urlToRequest = new URL(this.requestUrl);
             urlConnection = (HttpURLConnection) urlToRequest.openConnection();
@@ -37,9 +41,16 @@ public class GetContactLocationDataPostRequest extends PostRequest {
                 InputStream inputStream = urlConnection.getInputStream();
                 responseJson = (JSONObject) readJSONObjectFromInputStream(inputStream);
 
-                locationToReturn = new Location("");
-                locationToReturn.setLatitude(Double.parseDouble(responseJson.getString("Latitude")));
-                locationToReturn.setLongitude(Double.parseDouble(responseJson.getString("Longitude")));
+                Location location = new Location("");
+                location.setLatitude(Double.parseDouble(responseJson.getString("Latitude")));
+                location.setLongitude(Double.parseDouble(responseJson.getString("Longitude")));
+                contact.setLocation(location);
+
+                DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+                String string1 = responseJson.getString("LocationUpdateTime");
+                Date locationUpdateTime = df1.parse(string1);
+                contact.setLocationUpdateTime(locationUpdateTime);
+
             }
             else{
                 throw new Exception("not implemented");
@@ -59,6 +70,5 @@ public class GetContactLocationDataPostRequest extends PostRequest {
                 urlConnection.disconnect();
             }
         }
-        return locationToReturn;
     }
 }

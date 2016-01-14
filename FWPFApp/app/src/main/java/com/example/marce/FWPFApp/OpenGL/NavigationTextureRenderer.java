@@ -6,6 +6,7 @@ import android.opengl.GLSurfaceView.Renderer;
 import com.example.marce.FWPFApp.OpenGL.Text.GLText;
 
 import java.text.DecimalFormat;
+import java.util.Date;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -17,6 +18,7 @@ public class NavigationTextureRenderer implements Renderer {
     private String contactName;
     private float distanceInMeters;
     private String lastUpdate;
+    private Date locationUpdateTime;
 
     public void setContactName(String contactName) {
         this.contactName = contactName;
@@ -73,12 +75,31 @@ public class NavigationTextureRenderer implements Renderer {
             glText.draw("Entfernung: " + distanceString, 10, 60);
         }
         if (lastUpdate != null)
-            glText.draw("Letzte Aktualisierung " + lastUpdate, 10, 0);
+            glText.draw("Letzte Aktualisierung " + getLastUpdateString(), 10, 0);
         glText.end();                                   // End Text Rendering
 
         // disable texture + alpha
         gl.glDisable( GL10.GL_BLEND );                  // Disable Alpha Blend
         gl.glDisable( GL10.GL_TEXTURE_2D );             // Disable Texture Mapping
+    }
+
+    private String getLastUpdateString() {
+        if(locationUpdateTime != null){
+            Date now = new Date();
+            long seconds = (now.getTime()-locationUpdateTime.getTime())/1000;
+            if(seconds < 60){
+                return seconds + "s";
+            }
+            else if(seconds < 3600){
+                return (seconds / 60) + "m";
+            }
+            else {
+                return (seconds / 3600) + "h";
+            }
+        }
+        else{
+            return "N/A";
+        }
     }
 
     @Override
@@ -113,5 +134,9 @@ public class NavigationTextureRenderer implements Renderer {
         // Load the font from file (set size + padding), creates the texture
         // NOTE: after a successful call to this the font is ready for rendering!
         glText.load("tahoma.ttf", 60, 2, 2);  // Create Font (Height: 14 Pixels / X+Y Padding 2 Pixels)
+    }
+
+    public void setLastUpdate(Date locationUpdateTime) {
+        this.locationUpdateTime = locationUpdateTime;
     }
 }

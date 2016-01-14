@@ -34,7 +34,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -141,8 +145,19 @@ public class ContactListViewActivity extends AppCompatActivity implements Locati
                     Location location = new Location("");
                     location.setLatitude(latitude);
                     location.setLongitude(longitude);
-                    contactsWithLocationList.add(new Contact(id, userName, location));
+
+                    Contact contact = new Contact(id, userName, location);
+
+                    DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+                    String string1 = currentJson.getString("LocationUpdateTime");
+                    Date locationUpdateTime = df1.parse(string1);
+                    contact.setLocationUpdateTime(locationUpdateTime);
+
+                    contactsWithLocationList.add(contact);
+
                 } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch(ParseException e){
                     e.printStackTrace();
                 }
             }
@@ -170,11 +185,14 @@ public class ContactListViewActivity extends AppCompatActivity implements Locati
 
     @NonNull
     private Contact[] GenerateSampleContacts() {
-        return new Contact[]{
+        Contact[] result = new Contact[]{
                 new Contact("Max Berlin", SampleLocations.getBerlin()),
                 new Contact("Peter London", SampleLocations.getLondon()),
                 new Contact("Tobias Nürnberg", SampleLocations.getNuernberg()),
                 new Contact("Peter Roma", SampleLocations.getRoma())};
+
+        result[0].setLocationUpdateTime(new Date());
+        return result;
     }
 
     private void AddOnItemClickListener(ListView userListView) {

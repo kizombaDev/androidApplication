@@ -61,6 +61,7 @@ public class LocationService extends Service  implements LocationListener {
         locationManager = null;
     }
 
+
     @Override
     public void onLocationChanged(Location location) {
         Toast.makeText(this, "Service: update the Location", Toast.LENGTH_SHORT).show();

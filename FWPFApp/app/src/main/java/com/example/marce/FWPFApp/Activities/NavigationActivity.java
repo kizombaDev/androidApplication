@@ -27,6 +27,7 @@ import com.example.marce.FWPFApp.OpenGL.NavigationArrowRenderer;
 import com.example.marce.FWPFApp.OpenGL.NavigationTextureRenderer;
 import com.example.marce.FWPFApp.ServerCommunication.Requests.GetContactLocationDataPostRequest;
 
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -221,7 +222,10 @@ public class NavigationActivity extends AppCompatActivity implements LocationLis
         }
 
         navigationTextureRenderer.setDistanceInMeters(currentDeviceLocation.distanceTo(contact.getLocation()));
-        navigationTextureRenderer.setLastUpdate("N/A");
+
+        Date locationUpdateTime = contact.getLocationUpdateTime();
+        navigationTextureRenderer.setLastUpdate(locationUpdateTime);
+        /**/
     }
 
     private void registerSensors() {
@@ -254,16 +258,15 @@ public class NavigationActivity extends AppCompatActivity implements LocationLis
         @Override
         protected Boolean doInBackground(Void... params) {
             GetContactLocationDataPostRequest request = new GetContactLocationDataPostRequest(contact.getId());
-            responseLocation = request.execute();
+            request.execute(contact);
             return true;
         }
 
         @Override
         protected void onPostExecute(final Boolean success) {
             if(responseLocation != null) {
-                contact.setLocation(responseLocation);
                 updateGLArrow();
-
+                updateGLContactInformation();
                 Log.i("got new location", "arrow updated");
             }
         }

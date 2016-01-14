@@ -4,11 +4,14 @@ import android.location.Location;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.Date;
+
 public class Contact implements Parcelable {
     private String id;
     private String name;
     private Location location;
 
+    private Date locationUpdateTime;
 
     private String phoneNumber;
 
@@ -32,6 +35,12 @@ public class Contact implements Parcelable {
     public void setLocation(Location location) {
         this.location = location;
     }
+
+    public Date getLocationUpdateTime(){
+        return this.locationUpdateTime;
+    }
+
+    public void setLocationUpdateTime(Date date) { this.locationUpdateTime = date;}
 
     public float distanceToLocation(Location secondLocation) {
         if (location == null)
