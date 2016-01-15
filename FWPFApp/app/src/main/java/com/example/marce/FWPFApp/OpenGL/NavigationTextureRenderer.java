@@ -17,8 +17,11 @@ public class NavigationTextureRenderer implements Renderer {
 
     private String contactName;
     private float distanceInMeters;
-    private String lastUpdate;
     private Date locationUpdateTime;
+
+    public NavigationTextureRenderer(Context context) {
+        this.activityContext = context;
+    }
 
     public void setContactName(String contactName) {
         this.contactName = contactName;
@@ -28,12 +31,8 @@ public class NavigationTextureRenderer implements Renderer {
         this.distanceInMeters = distanceInMeters;
     }
 
-    public void setLastUpdate(String lastUpdate) {
-        this.lastUpdate = lastUpdate;
-    }
-
-    public NavigationTextureRenderer(Context context) {
-        this.activityContext = context;
+    public void setLastUpdate(Date locationUpdateTime) {
+        this.locationUpdateTime = locationUpdateTime;
     }
 
     @Override
@@ -74,43 +73,42 @@ public class NavigationTextureRenderer implements Renderer {
             String distanceString = new DecimalFormat("0.00").format(distance) + units;
             glText.draw("Entfernung: " + distanceString, 10, 60);
         }
-        if (lastUpdate != null)
-            glText.draw("Letzte Aktualisierung " + getLastUpdateString(), 10, 0);
+        if (locationUpdateTime != null)
+            glText.draw("Letzte Aktualisierung: vor " + getLastUpdateString(), 10, 0);
         glText.end();                                   // End Text Rendering
 
         // disable texture + alpha
-        gl.glDisable( GL10.GL_BLEND );                  // Disable Alpha Blend
-        gl.glDisable( GL10.GL_TEXTURE_2D );             // Disable Texture Mapping
+        gl.glDisable(GL10.GL_BLEND);                  // Disable Alpha Blend
+        gl.glDisable(GL10.GL_TEXTURE_2D);             // Disable Texture Mapping
     }
 
     private String getLastUpdateString() {
-        if(locationUpdateTime != null){
+        if (locationUpdateTime != null) {
             Date now = new Date();
-            long seconds = (now.getTime()-locationUpdateTime.getTime())/1000;
-            if(seconds < 60){
+            long seconds = (now.getTime() - locationUpdateTime.getTime()) / 1000;
+            if (seconds < 60) {
                 return seconds + "s";
-            }
-            else if(seconds < 3600){
+            } else if (seconds < 60 * 60) {
                 return (seconds / 60) + "m";
+            } else if (seconds < 60 * 60 * 60) {
+                return (seconds / (60 * 60)) + "h";
+            } else {
+                return (seconds / (60 * 60 * 60)) + "h";
             }
-            else {
-                return (seconds / 3600) + "h";
-            }
-        }
-        else{
+        } else {
             return "N/A";
         }
     }
 
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
-        if(height == 0) { 						//Prevent A Divide By Zero By
-            height = 1; 						//Making Height Equal One
+        if (height == 0) {                        //Prevent A Divide By Zero By
+            height = 1;                        //Making Height Equal One
         }
 
-        gl.glViewport(0, 0, width, height); 	//Reset The Current Viewport
+        gl.glViewport(0, 0, width, height);    //Reset The Current Viewport
         gl.glMatrixMode(GL10.GL_PROJECTION);          // Activate Projection Matrix
-        gl.glLoadIdentity(); 					//Reset The Projection Matrix
+        gl.glLoadIdentity();                    //Reset The Projection Matrix
 
         updateTexture(gl, width, height);
     }
@@ -129,14 +127,12 @@ public class NavigationTextureRenderer implements Renderer {
         //gl.glClearColor( 0.5f, 0.5f, 0.5f, 1.0f );
 
         // Create the GLText
-        glText = new GLText( gl, activityContext.getAssets() );
+        glText = new GLText(gl, activityContext.getAssets());
 
         // Load the font from file (set size + padding), creates the texture
         // NOTE: after a successful call to this the font is ready for rendering!
         glText.load("tahoma.ttf", 60, 2, 2);  // Create Font (Height: 14 Pixels / X+Y Padding 2 Pixels)
     }
 
-    public void setLastUpdate(Date locationUpdateTime) {
-        this.locationUpdateTime = locationUpdateTime;
-    }
+
 }

@@ -33,7 +33,7 @@ import java.util.TimerTask;
 
 public class NavigationActivity extends AppCompatActivity implements LocationListener, SensorEventListener {
 
-    private GLSurfaceView glView;
+    private GLSurfaceView glArrowSurfaceView;
     private NavigationArrowRenderer navigationArrowRenderer;
     private NavigationTextureRenderer navigationTextureRenderer;
     private Location currentDeviceLocation;
@@ -44,8 +44,8 @@ public class NavigationActivity extends AppCompatActivity implements LocationLis
     private float currentDeviceAngle;
     private AngleCalculationHelper angleCalculationHelper;
     private Contact contact;
-    private float currentDeviceInclinationAngle;
     private Timer contactUpdateTimer;
+    private GLSurfaceView glTextureSurfaceView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +61,6 @@ public class NavigationActivity extends AppCompatActivity implements LocationLis
         locationManager = (LocationManager)
                 getSystemService(Context.LOCATION_SERVICE);
 
-        //todo do it better
         try {
             this.currentDeviceLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         } catch (SecurityException e) {
@@ -122,27 +121,28 @@ public class NavigationActivity extends AppCompatActivity implements LocationLis
 
     private void initGLView() {
         // Now let's create an OpenGL surface.
-        glView = new GLSurfaceView(this);
-        glView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
-        glView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
+        glArrowSurfaceView = new GLSurfaceView(this);
+        glArrowSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
+        glArrowSurfaceView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
         navigationArrowRenderer = new NavigationArrowRenderer();
-        glView.setRenderer(navigationArrowRenderer);
-        addContentView(glView, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+        glArrowSurfaceView.setRenderer(navigationArrowRenderer);
+        addContentView(glArrowSurfaceView, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 
-        glView = new GLSurfaceView(this);
-        glView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
-        glView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
+        glTextureSurfaceView = new GLSurfaceView(this);
+        glTextureSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
+        glTextureSurfaceView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
         navigationTextureRenderer = new NavigationTextureRenderer(this);
         navigationTextureRenderer.setContactName(contact.getName());
-        glView.setRenderer(navigationTextureRenderer);
-        addContentView(glView, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+        glTextureSurfaceView.setRenderer(navigationTextureRenderer);
+        addContentView(glTextureSurfaceView, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         unregisterSensors();
-        glView.onPause();
+        glArrowSurfaceView.onPause();
+        glTextureSurfaceView.onPause();
         stopContactUpdateTrigger();
     }
 
@@ -150,7 +150,8 @@ public class NavigationActivity extends AppCompatActivity implements LocationLis
     protected void onResume() {
         super.onResume();
         registerSensors();
-        glView.onResume();
+        glArrowSurfaceView.onResume();
+        glTextureSurfaceView.onResume();
         startContactUpdateTrigger();
     }
 
@@ -195,9 +196,6 @@ public class NavigationActivity extends AppCompatActivity implements LocationLis
 
     private void updateGLArrow() {
         if (currentDeviceLocation == null) {
-            /*currentDeviceLocation = new Location("");
-            currentDeviceLocation.setLongitude(11.343355);
-            currentDeviceLocation.setLatitude(49.565346);*/
             return;
         }
 
@@ -225,7 +223,6 @@ public class NavigationActivity extends AppCompatActivity implements LocationLis
 
         Date locationUpdateTime = contact.getLocationUpdateTime();
         navigationTextureRenderer.setLastUpdate(locationUpdateTime);
-        /**/
     }
 
     private void registerSensors() {
