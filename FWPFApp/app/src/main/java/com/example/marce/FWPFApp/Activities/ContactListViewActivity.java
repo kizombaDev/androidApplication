@@ -43,6 +43,9 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+/**
+ * Created by Marcel Swoboda
+ */
 
 public class ContactListViewActivity extends AppCompatActivity implements LocationListener, SensorEventListener {
 
@@ -60,19 +63,20 @@ public class ContactListViewActivity extends AppCompatActivity implements Locati
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
+        //Wir untersützen nur den Portrait-Modus
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_user_list_view);
 
-
+        //LocationManager und SensorManager erstellen
         locationManager = (LocationManager)
                 getSystemService(Context.LOCATION_SERVICE);
 
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         accelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         magnetometer = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
-        angleCalculationHelper = new AngleCalculationHelper(300);
 
+        //AngleCalculationHelper erstellen und angeben, dass die Winkelangaben alle 300 ms aktualisiert werden sollen
+        angleCalculationHelper = new AngleCalculationHelper(300);
     }
 
 
@@ -250,12 +254,10 @@ public class ContactListViewActivity extends AppCompatActivity implements Locati
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        //sauber????
-        // contactarrayadapter unter uumständen noch nicht initialisiert zu dem zeitpunkt, weil das erst in onpostexecute vom asynctask passiert
         if(contactArrayAdapter != null){
             angleCalculationHelper.setSensorEvent(event);
-            if (angleCalculationHelper.hasDeviceDegree()) {
-                float deviceDegree = angleCalculationHelper.getDeviceDegree();
+            if (angleCalculationHelper.hasDeviceAngles()) {
+                float deviceDegree = angleCalculationHelper.getDeviceAngleZ();
                 contactArrayAdapter.deviceDegreeChanged(deviceDegree);
             }
         }

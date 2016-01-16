@@ -11,15 +11,21 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.example.marce.FWPFApp.Helper.Globals;
 import com.example.marce.FWPFApp.ServerCommunication.Requests.UpdateMyCurrentLocationPutRequest;
 
+/**
+ * Created by Marcel Swoboda
+ * Der LocationService schickt die aktuellen Standortdaten an den Server
+ * Sobald neue Standortdaten vorliegen wir die Methoe onLocationChanged vom LocationManager aufgerufen.
+ * Der Server kann den Client anhand einer ID, welcher der Client bei der Anmeldung erhalten hat und
+ * sich in den  SharedPreferences speichert, zuordnen.
+ */
+
 public class LocationService extends Service  implements LocationListener {
     private LocationManager locationManager;
-
-    UpdateMyLocationTask updateMyLocationTask;
+    private UpdateMyLocationTask updateMyLocationTask;
 
 
     public LocationService() {
@@ -40,6 +46,7 @@ public class LocationService extends Service  implements LocationListener {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         try {
+            //Meldet en LocationService für neue Standortdaten an ... alle 15 Sekunden oder bei 20 Meter
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 15000, 20, this);
         } catch (SecurityException e) {
             Log.e("GPS", "No permissions", e);
@@ -64,8 +71,7 @@ public class LocationService extends Service  implements LocationListener {
 
     @Override
     public void onLocationChanged(Location location) {
-        Toast.makeText(this, "Service: update the Location", Toast.LENGTH_SHORT).show();
-
+        //Neue Daten an den Server schicken
         updateMyLocationTask = new UpdateMyLocationTask(location);
         updateMyLocationTask.execute((Void) null);
     }
@@ -95,6 +101,7 @@ public class LocationService extends Service  implements LocationListener {
 
         @Override
         protected Boolean doInBackground(Void... params) {
+            //Auslesen der Id aus den SharedPreferences
             SharedPreferences settings = getSharedPreferences(Globals.settingFile(), MODE_PRIVATE);
             String myId = settings.getString(Globals.settingUserId(), "-1");
             UpdateMyCurrentLocationPutRequest request = new UpdateMyCurrentLocationPutRequest(myId, location);

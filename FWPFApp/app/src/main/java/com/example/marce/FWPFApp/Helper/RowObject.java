@@ -5,12 +5,18 @@ import android.widget.TextView;
 
 import com.example.marce.FWPFApp.DataObjects.Contact;
 
+/**
+ * Created by Marcel Swoboda
+ * Die Datenobjekt speichert Informationen zu jeder Zeile der ListView
+ * Z.B. Contact und aktueller Winkel des roten Pfeils
+ */
+
 public class RowObject {
 
     private Contact contact;
     private TextView distanceTextView;
     private ImageView icon;
-    private float lastIconDegree;
+    private float lastIconAngle;
     private ImageView iconBlack;
 
     public void setContact(Contact contact) {
@@ -37,12 +43,12 @@ public class RowObject {
         return icon;
     }
 
-    public void setLastIconDegree(float lastIconDegree) {
-        this.lastIconDegree = lastIconDegree;
+    public void setLastIconAngle(float lastIconDegree) {
+        this.lastIconAngle = lastIconDegree;
     }
 
-    public float getLastIconDegree() {
-        return lastIconDegree;
+    public float getLastIconAngle() {
+        return lastIconAngle;
     }
 
     public void setIconBlack(ImageView iconBlack) {

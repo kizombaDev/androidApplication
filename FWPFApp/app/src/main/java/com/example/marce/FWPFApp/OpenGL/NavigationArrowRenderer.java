@@ -9,64 +9,69 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 public class NavigationArrowRenderer implements Renderer {
-    private NavigationArrow navigationArrow;		// the navigationArrow
-
-    private float targetArrowDegree;
-    private boolean hasDegree = false;
-    private float deviceInclinationAngle;
+    private NavigationArrow navigationArrow;
+    private float deviceAngleZ;
+    private boolean hasDeviceAngleZ = false;
+    private float deviceAngleX;
+    private boolean hasDeviceAngleX = false;
 
     public NavigationArrowRenderer() {
         this.navigationArrow = new NavigationArrow();
 
+        //Im Emulator liefert der Sensor keien Winkelinformationen der Pfeil soll aber trotzdem angezeigt werden
+        //Dies ist nur für das Testen im Emulator wichtig
         if (Globals.isEmulator()) {
-            hasDegree = true;
+            hasDeviceAngleZ = true;
+            hasDeviceAngleX = true;
         }
     }
 
     @Override
     public void onDrawFrame(GL10 gl) {
-        // clear Screen and Depth Buffer
+        // Screen leeren
         gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 
-        gl.glMatrixMode(GL10.GL_MODELVIEW); // Activate Model View Matrix
+        gl.glMatrixMode(GL10.GL_MODELVIEW); // Aktiviere Model View Matrix
 
-        // Reset the Modelview Matrix
+        // Zurücksetzen der Modelview Matrix
         gl.glLoadIdentity();
 
         drawArrow(gl);
     }
 
     private void drawArrow(GL10 gl) {
-        if (hasDegree) {
-            // Drawing
-            gl.glTranslatef(0.0f, 0.0f, -5.0f);        // move 5 units INTO the screen
+        //Zeichne den Pfeil erst wenn beide Winkelangaben vorhadnen sind
+        if (hasDeviceAngleZ && hasDeviceAngleX) {
+            // Verschiebe 5 Einheiten nach innen
+            gl.glTranslatef(0.0f, 0.0f, -5.0f);
 
             //unter 300Grad wird der Pfeil nicht mehr schön dargestellt
-            if (deviceInclinationAngle < 300 && deviceInclinationAngle > 90) {
-                deviceInclinationAngle = 300;
+            if (deviceAngleX < 300 && deviceAngleX > 90) {
+                deviceAngleX = 300;
             }
-            gl.glRotatef(targetArrowDegree, 0.0f, 0.0f, 1.0f);
-            gl.glRotatef(deviceInclinationAngle, 1.0f, 0.0f, 0.0f);
-            // is the same as moving the camera 5 units away
-            navigationArrow.draw(gl);                        // Draw the Arrow
+            //Drehe den Pfeil
+            gl.glRotatef(deviceAngleZ, 0.0f, 0.0f, 1.0f);
+            gl.glRotatef(deviceAngleX, 1.0f, 0.0f, 0.0f);
+
+            //Zeichnet den Pfeil
+            navigationArrow.draw(gl);
         }
     }
 
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
-        if(height == 0) { 						//Prevent A Divide By Zero By
-            height = 1; 						//Making Height Equal One
+        if (height == 0) {
+            height = 1;
         }
 
-        gl.glViewport(0, 0, width, height); 	//Reset The Current Viewport
-        gl.glMatrixMode(GL10.GL_PROJECTION);    // Activate Projection Matrix
-        gl.glLoadIdentity(); 					//Reset The Projection Matrix
+        gl.glViewport(0, 0, width, height);    //Setzt den aktuellen Viewport zurück
+        gl.glMatrixMode(GL10.GL_PROJECTION);    // Aktivieren der  Projection Matrix
+        gl.glLoadIdentity();                    //Setzt die Projektions Matrix zurück
 
         updateArrow(gl, width, height);
     }
 
     private void updateArrow(GL10 gl, int width, int height) {
-        //Calculate The Aspect Ratio Of The Window
         GLU.gluPerspective(gl, 45.0f, (float) width / (float)height, 0.1f, 100.0f);
     }
 
@@ -74,12 +79,13 @@ public class NavigationArrowRenderer implements Renderer {
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
     }
 
-    public void updateArrowAngle(float nextArrowDegree) {
-        this.targetArrowDegree = 360 - nextArrowDegree;
-        hasDegree = true;
+    public void updateAngleToTargetLoactionZ(float nextArrowDegree) {
+        this.deviceAngleZ = 360 - nextArrowDegree;
+        hasDeviceAngleZ = true;
     }
 
-    public void updateInclinationAngle(float deviceInclinationAngle) {
-        this.deviceInclinationAngle = deviceInclinationAngle;
+    public void updateDeviceAngleX(float deviceInclinationAngle) {
+        this.deviceAngleX = deviceInclinationAngle;
+        hasDeviceAngleX = true;
     }
 }

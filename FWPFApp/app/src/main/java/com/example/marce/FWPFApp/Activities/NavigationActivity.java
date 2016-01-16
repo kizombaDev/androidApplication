@@ -21,7 +21,7 @@ import android.view.ViewGroup.LayoutParams;
 
 import com.example.marce.FWPFApp.DataObjects.Contact;
 import com.example.marce.FWPFApp.Helper.AngleCalculationHelper;
-import com.example.marce.FWPFApp.Helper.CameraView;
+import com.example.marce.FWPFApp.Helper.CameraSurfaceView;
 import com.example.marce.FWPFApp.Helper.Globals;
 import com.example.marce.FWPFApp.OpenGL.NavigationArrowRenderer;
 import com.example.marce.FWPFApp.OpenGL.NavigationTextureRenderer;
@@ -41,11 +41,12 @@ public class NavigationActivity extends AppCompatActivity implements LocationLis
     private SensorManager mSensorManager;
     private Sensor accelerometer;
     private Sensor magnetometer;
-    private float currentDeviceAngle;
+    private float deviceAngleZ;
     private AngleCalculationHelper angleCalculationHelper;
     private Contact contact;
     private Timer contactUpdateTimer;
     private GLSurfaceView glTextureSurfaceView;
+    private float deviceAngleX;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,13 +115,12 @@ public class NavigationActivity extends AppCompatActivity implements LocationLis
 
     private void initCameraView() {
         if (!Globals.isEmulator()) {
-            CameraView cameraView = new CameraView(this);
-            addContentView(cameraView, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+            CameraSurfaceView cameraSurfaceView = new CameraSurfaceView(this);
+            addContentView(cameraSurfaceView, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
         }
     }
 
     private void initGLView() {
-        // Now let's create an OpenGL surface.
         glArrowSurfaceView = new GLSurfaceView(this);
         glArrowSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
         glArrowSurfaceView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
@@ -140,6 +140,8 @@ public class NavigationActivity extends AppCompatActivity implements LocationLis
     @Override
     protected void onPause() {
         super.onPause();
+        //Wenn die View nicht angezeigt wird sollen die SurfaceViews nichts zeichnen und es werden auch keien Neuen
+        //Daten vom Server und den Sensoren benötigit
         unregisterSensors();
         glArrowSurfaceView.onPause();
         glTextureSurfaceView.onPause();
@@ -149,6 +151,8 @@ public class NavigationActivity extends AppCompatActivity implements LocationLis
     @Override
     protected void onResume() {
         super.onResume();
+        //Da die View wieder angezeigt werden soll, werden die Sensor und ServerDaten wieder benötitgt.
+        //Die SurfaceVies müssen wieder gezeichent werden
         registerSensors();
         glArrowSurfaceView.onResume();
         glTextureSurfaceView.onResume();
@@ -181,9 +185,9 @@ public class NavigationActivity extends AppCompatActivity implements LocationLis
     @Override
     public void onSensorChanged(SensorEvent event) {
         angleCalculationHelper.setSensorEvent(event);
-        if (angleCalculationHelper.hasDeviceDegree()) {
-            this.currentDeviceAngle = angleCalculationHelper.getDeviceDegree();
-            navigationArrowRenderer.updateInclinationAngle(angleCalculationHelper.getDeviceInclinationAngle());
+        if (angleCalculationHelper.hasDeviceAngles()) {
+            this.deviceAngleZ = angleCalculationHelper.getDeviceAngleZ();
+            this.deviceAngleX = angleCalculationHelper.getDeviceAngleX();
             updateGLArrow();
         }
     }
@@ -199,19 +203,22 @@ public class NavigationActivity extends AppCompatActivity implements LocationLis
             return;
         }
 
-        if (!angleCalculationHelper.hasDeviceDegree())
+        if (!angleCalculationHelper.hasDeviceAngles())
             return;
 
         Location destination = contact.getLocation();
-        float nextArrowAngle;
+        //Berechnet den Winkel zwischen den zwei Standorten
         float angleToDestination = currentDeviceLocation.bearingTo(destination);
 
-        nextArrowAngle = (angleToDestination - currentDeviceAngle);
-        if (nextArrowAngle < 0) {
-            nextArrowAngle += 360;
+        //Berechnet den Winkel des Pfeils
+        float angleToTargetLocationZ = (angleToDestination - deviceAngleZ);
+        if (angleToTargetLocationZ < 0) {
+            angleToTargetLocationZ += 360;
         }
 
-        navigationArrowRenderer.updateArrowAngle(nextArrowAngle);
+        navigationArrowRenderer.updateAngleToTargetLoactionZ(angleToTargetLocationZ);
+        navigationArrowRenderer.updateDeviceAngleX(deviceAngleX);
+
     }
 
     private void updateGLContactInformation() {
@@ -250,7 +257,6 @@ public class NavigationActivity extends AppCompatActivity implements LocationLis
 
     public class GetContactLocationDataTask extends AsyncTask<Void, Void, Boolean> {
 
-        private Location responseLocation;
 
         @Override
         protected Boolean doInBackground(Void... params) {
@@ -261,11 +267,9 @@ public class NavigationActivity extends AppCompatActivity implements LocationLis
 
         @Override
         protected void onPostExecute(final Boolean success) {
-            if(responseLocation != null) {
                 updateGLArrow();
                 updateGLContactInformation();
                 Log.i("got new location", "arrow updated");
-            }
         }
     }
 }

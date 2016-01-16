@@ -12,7 +12,6 @@ public class AngleCalculationHelper {
     private float[] mGravity = null;
     private float[] mGeomagnetic = null;
     private float deviceInclinationAngle;
-    private float[] orientation = new float[3];
 
     public AngleCalculationHelper(long sensorUpdateMilliSeconds) {
         this.sensorUpdateMilliSeconds = sensorUpdateMilliSeconds;
@@ -37,21 +36,19 @@ public class AngleCalculationHelper {
                 hasDeviceDegree = true;
                 this.deviceDegree = (float) (Math.toDegrees(orientation[0]) + 360) % 360;
                 this.deviceInclinationAngle = (float) (Math.toDegrees(orientation[1]) + 360) % 360;
-                //Log.i("Marcel", "inclianation: " + deviceInclinationAngle);
-
             }
         }
     }
 
-    public boolean hasDeviceDegree() {
+    public boolean hasDeviceAngles() {
         return hasDeviceDegree;
     }
 
-    public float getDeviceDegree() {
+    public float getDeviceAngleZ() {
         return deviceDegree;
     }
 
-    public float getDeviceInclinationAngle() {
+    public float getDeviceAngleX() {
         return deviceInclinationAngle;
     }
 

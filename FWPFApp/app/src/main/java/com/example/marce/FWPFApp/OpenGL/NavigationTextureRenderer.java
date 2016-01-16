@@ -90,10 +90,8 @@ public class NavigationTextureRenderer implements Renderer {
                 return seconds + "s";
             } else if (seconds < 60 * 60) {
                 return (seconds / 60) + "m";
-            } else if (seconds < 60 * 60 * 60) {
-                return (seconds / (60 * 60)) + "h";
             } else {
-                return (seconds / (60 * 60 * 60)) + "h";
+                return (seconds / (60 * 60)) + "h";
             }
         } else {
             return "N/A";

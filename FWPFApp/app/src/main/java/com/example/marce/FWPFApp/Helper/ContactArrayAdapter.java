@@ -17,10 +17,10 @@ import com.example.marce.FWPFApp.R;
 
 import java.util.List;
 
-
+/**
+ * Created by Marcel Swoboda
+ */
 public class ContactArrayAdapter extends ArrayAdapter<Contact> {
-
-
     private final Context context;
     private final RowObject[] rowObjects;
     private Location currentLocation;
@@ -33,6 +33,11 @@ public class ContactArrayAdapter extends ArrayAdapter<Contact> {
         initRowObjects(contacts);
     }
 
+    /**
+     * Erstellt für jeden Kontakt ein RowObject und speichert die Kontaktdaten dadrin
+     *
+     * @param contacts Liste aller verfügbaren Kontakte
+     */
     private void initRowObjects(List<Contact> contacts) {
         for (int i = 0; i < rowObjects.length; i++) {
             rowObjects[i] = new RowObject();
@@ -44,15 +49,17 @@ public class ContactArrayAdapter extends ArrayAdapter<Contact> {
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        //Setzt das Row-Layout der ListView; in dem Layout ist definiert wo das Icon (Pfeil) oder die Texte platziert sind
         View rowView = inflater.inflate(R.layout.rowlayout, parent, false);
 
         TextView textView = (TextView) rowView.findViewById(R.id.ContactNameLabel);
         TextView distanceView = (TextView) rowView.findViewById(R.id.distance);
         rowObjects[position].setDistanceTextView(distanceView);
         if (currentLocation == null) {
-            distanceView.setText(R.string.NoGPSSingal);
+            distanceView.setText("");
         } else {
-            updateDistanceOfRow(currentLocation, position);
+            updateTheDistanceText(currentLocation, position);
         }
         textView.setText(rowObjects[position].getContact().getName());
 
@@ -64,14 +71,13 @@ public class ContactArrayAdapter extends ArrayAdapter<Contact> {
         return rowView;
     }
 
-    private void updateDistance(Location location) {
-
-        for (int i = 0; i < rowObjects.length; i++) {
-            updateDistanceOfRow(location, i);
-        }
-    }
-
-    private void updateDistanceOfRow(Location location, int position) {
+    /**
+     * Es gibt neue eigene Standortdaten und die Entfernung zu den anderen Kontakten muss neu berechnet werden
+     *
+     * @param location neuer eigener Standort
+     * @param position Index der Zeile in der ListView für die gerade die Methode aufgerufen wird
+     */
+    private void updateTheDistanceText(Location location, int position) {
         String distanceText;
         if (location == null) {
             distanceText = "";
@@ -84,11 +90,23 @@ public class ContactArrayAdapter extends ArrayAdapter<Contact> {
         rowObjects[position].getDistanceTextView().setText(distanceText);
     }
 
+    /**
+     * setzt eine neue eigene Location
+     * Daraufhin müssen die Entfernungsangaben neu berechnet werden
+     * @param location Neuer Standort
+     */
     public void locationChanged(Location location) {
-        updateDistance(location);
         this.currentLocation = location;
+        for (int i = 0; i < rowObjects.length; i++) {
+            updateTheDistanceText(location, i);
+        }
     }
 
+    /**
+     * Es gibt eine neue Winkel vom Sensor
+     * Daraufhin müssen die roten Pfeile gedreht werden
+     * @param currentDegree Neue Winkelangabe
+     */
     public void deviceDegreeChanged(float currentDegree) {
         updateDeviceDegree(currentLocation, currentDegree);
     }
@@ -96,17 +114,13 @@ public class ContactArrayAdapter extends ArrayAdapter<Contact> {
     private void updateDeviceDegree(Location currentLocation, float currentDegree) {
 
         if (currentLocation == null) {
-           /*
-            currentLocation = new Location("");
-            currentLocation.setLongitude(11.343355);
-            currentLocation.setLatitude(49.565346);*/
             return;
         }
 
         for (int i = 0; i < rowObjects.length; i++) {
 
             Location destination = rowObjects[i].getContact().getLocation();
-            float lastIconDegree = rowObjects[i].getLastIconDegree();
+            float lastIconAngle = rowObjects[i].getLastIconAngle();
             float currentCompassDegree;
             float degreeToDestination = currentLocation.bearingTo(destination);
 
@@ -116,38 +130,37 @@ public class ContactArrayAdapter extends ArrayAdapter<Contact> {
                 currentCompassDegree += 360;
             }
 
-            float nextIconDegree = currentCompassDegree;
+            float nextIconAngle = currentCompassDegree;
 
-            if(0 < lastIconDegree && lastIconDegree < 90 && 270 < nextIconDegree && nextIconDegree < 360)
-            {
-                nextIconDegree -= 360;
+            if (0 < lastIconAngle && lastIconAngle < 90 && 270 < nextIconAngle && nextIconAngle < 360) {
+                nextIconAngle -= 360;
             }
 
-            if(0 < nextIconDegree && nextIconDegree < 90 && 270 < lastIconDegree && lastIconDegree < 360)
-            {
-                lastIconDegree -= 360;
+            if (0 < nextIconAngle && nextIconAngle < 90 && 270 < lastIconAngle && lastIconAngle < 360) {
+                lastIconAngle -= 360;
             }
 
-            // create a rotation animation (reverse turn degree degrees)
+            //Erstellt die Animation und setzt die Winkel angaben
+            //Der Pfeil soll von lastIconAngle nach nextIconAngle drehen
             RotateAnimation ra = new RotateAnimation(
-                    lastIconDegree,
-                    nextIconDegree,
+                    lastIconAngle,
+                    nextIconAngle,
                     Animation.RELATIVE_TO_SELF, 0.5f,
                     Animation.RELATIVE_TO_SELF, 0.5f);
 
 
-            // how long the animation will take place
+            //Die Animation soll 210ms dauern
             ra.setDuration(210);
-
-            // set the animation after the end of the reservation status
             ra.setFillAfter(true);
 
-            // Start the animation
+
             RowObject currentRowObject = rowObjects[i];
             currentRowObject.getIcon().setVisibility(View.VISIBLE);
             currentRowObject.getIconBlack().setVisibility(View.INVISIBLE);
+            currentRowObject.setLastIconAngle(currentCompassDegree);
+
+            //Start the animation
             currentRowObject.getIcon().startAnimation(ra);
-            currentRowObject.setLastIconDegree(currentCompassDegree);
 
         }
     }
@@ -160,6 +173,10 @@ public class ContactArrayAdapter extends ArrayAdapter<Contact> {
             return null;
     }
 
+    /**
+     * Sobald der GPS-Sensor deaktiviert wird, soll die ListView keien Infos mehr anzeigen
+     * d.h. die Pfeile werden grau und die Entfernungsangaben werden nicht mehr angezeigt
+     */
     public void locationProviderDisabled() {
         currentLocation = null;
 
@@ -173,7 +190,7 @@ public class ContactArrayAdapter extends ArrayAdapter<Contact> {
             if (currentRowObject != null) {
 
                 if (currentRowObject.getDistanceTextView() != null)
-                    currentRowObject.getDistanceTextView().setText(R.string.NoGPSSingal);
+                    currentRowObject.getDistanceTextView().setText("");
                 if (currentRowObject.getIcon() != null) {
                     currentRowObject.getIcon().clearAnimation();
                     currentRowObject.getIcon().setVisibility(View.INVISIBLE);
