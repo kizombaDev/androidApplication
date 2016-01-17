@@ -7,17 +7,30 @@ import java.nio.FloatBuffer;
 
 import javax.microedition.khronos.opengles.GL10;
 
+/**
+ * In dieser Klasse ist das Aussehen des Pfeils mit Hilfe von Vektoren definiert
+ * Aus Performance gründen werden die Float-Arrays in FloatBuffer gespeichert ... dies passiert im Konstruktor
+ * <p/>
+ * Datei: NavigationArrow  Autor: Marcel
+ * Datum: 19.12  Version: <Versionsnummer>
+ * Historie:
+ * 19.12: Marcel 2D Pfeil erstellt
+ * 20.12: Marcel aus dem 2D ein 3D Pfeil gemacht
+ * 27.12: Marcel Farbe des Pfeils angepasst
+ */
+
 public class NavigationArrow {
 
-    private FloatBuffer vertexBuffer;	// buffer holding the vertices
+    private FloatBuffer vertexBuffer;
     private FloatBuffer colorBuffer;
     private ByteBuffer indexBuffer;
 
     private byte[] indices = {
-            0, 1, 2,
-            2, 1, 3
+            0, 1, 2, //Vektor 0, 1 und 2 aus dem vertices-Array ergeben ein Dreieck
+            2, 1, 3  //Vektor 2, 1 und 3 aus dem vertices-Array ergeben ein Dreieck
     };
 
+    //Vektor definitionen
     private float vertices[] = {
             -0.75f, -0.75f, 0.0f,
             0.0f, -0.3f, 0.1f,
@@ -27,7 +40,7 @@ public class NavigationArrow {
     };
 
 
-    private float[] colors = { // Colors for the vertices
+    private float[] colors = {
             0.0f, 0.0f, 1.0f, 1.0f,
             0.0f, 0.0f, 1.0f, 1.0f,
             0.0f, 0.0f, 1.0f, 1.0f,
@@ -35,44 +48,44 @@ public class NavigationArrow {
     };
 
     public NavigationArrow() {
-        // a float has 4 bytes so we allocate for each coordinate 4 bytes
+        //Für jeden float wert werden 4 Bytes benötigit
         ByteBuffer vertexByteBuffer = ByteBuffer.allocateDirect(vertices.length * 4);
         vertexByteBuffer.order(ByteOrder.nativeOrder());
-
-        // allocates the memory from the byte buffer
         vertexBuffer = vertexByteBuffer.asFloatBuffer();
 
-        // fill the vertexBuffer with the vertices
+        // vektoren werden in den Buffer gefüllt
         vertexBuffer.put(vertices);
 
-        // set the cursor position to the beginning of the buffer
+        // Buffer wieder auf position 0 setzen
         vertexBuffer.position(0);
 
-        // Setup color-array buffer. Colors in float. A float has 4 bytes 
+        //Für jeden float wert werden 4 Bytes benötigit
         ByteBuffer cbb = ByteBuffer.allocateDirect(colors.length * 4);
-        cbb.order(ByteOrder.nativeOrder()); // Use native byte order 
-        colorBuffer = cbb.asFloatBuffer();  // Convert byte buffer to float 
-        colorBuffer.put(colors);            // Copy data into buffer 
-        colorBuffer.position(0);            // Rewind 
+        cbb.order(ByteOrder.nativeOrder());
+        colorBuffer = cbb.asFloatBuffer();
+        colorBuffer.put(colors);
+        colorBuffer.position(0);
 
-        // Setup index-array buffer. Indices in byte.
+        //Da hier nur bytes gespeichert werden müssen reicht ein Byte pro Array Eintrag
         indexBuffer = ByteBuffer.allocateDirect(indices.length);
         indexBuffer.put(indices);
         indexBuffer.position(0);
     }
 
-    /** The draw method for the square with the GL context */
+    /**
+     * Zeichnet den Pfeil in das gl object
+     * @param gl GL in das der Pfeil gezeichnet werden soll
+     */
     public void draw(GL10 gl) {
 
-        // Enable arrays and define the buffers
         gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
         gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer);
-        gl.glEnableClientState(GL10.GL_COLOR_ARRAY);          // Enable color-array 
-        gl.glColorPointer(4, GL10.GL_FLOAT, 0, colorBuffer);  // Define color-array buffer 
+        gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
+        gl.glColorPointer(4, GL10.GL_FLOAT, 0, colorBuffer);
 
-        // Draw the primitives via index-array
+        //Zeichnet den Pfeil anhand der Daten aus dem Buffer
         gl.glDrawElements(GL10.GL_TRIANGLES, indices.length, GL10.GL_UNSIGNED_BYTE, indexBuffer);
         gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
-        gl.glDisableClientState(GL10.GL_COLOR_ARRAY);   // Disable color-array 
+        gl.glDisableClientState(GL10.GL_COLOR_ARRAY);
     }
 }

@@ -8,6 +8,16 @@ import com.example.marce.FWPFApp.Helper.Globals;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
+/**
+ * Datei: NavigationArrowRenderer  Autor: Marcel
+ * Datum: 17.12  Version: <Versionsnummer>
+ * Historie:
+ * 17.12: Marcel Erstellung der Klasse
+ * 17.12: Marcel Pfeil wird nur gezeichnet nicht gedreht
+ * 19.12: Marcel Pfeil dreht sich in die Z Richtung
+ * 22.12: Marcel Pfeil dreht sich jetzt in zwei Richtungen
+ */
+
 public class NavigationArrowRenderer implements Renderer {
     private NavigationArrow navigationArrow;
     private float deviceAngleZ;

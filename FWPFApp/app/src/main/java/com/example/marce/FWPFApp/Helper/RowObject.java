@@ -6,9 +6,13 @@ import android.widget.TextView;
 import com.example.marce.FWPFApp.DataObjects.Contact;
 
 /**
- * Created by Marcel Swoboda
  * Die Datenobjekt speichert Informationen zu jeder Zeile der ListView
  * Z.B. Contact und aktueller Winkel des roten Pfeils
+ *
+ * * Datei: ContactArrayAdapter  Autor: Marcel
+ * Datum: 22.12  Version: <Versionsnummer>
+ * Historie:
+ * 18.12: Marcel Erstellung der Klasse
  */
 
 public class RowObject {

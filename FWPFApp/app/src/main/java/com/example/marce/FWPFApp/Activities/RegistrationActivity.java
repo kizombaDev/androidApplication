@@ -28,6 +28,13 @@ import com.example.marce.FWPFApp.ServerCommunication.Requests.RegisterMyselfAndG
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/*
+* Datei: RegistrationActivity  Autor: Marcel
+* Datum: 17.12   Version: <Versionsnummer>
+* Historie:
+* 17.12: Marcel Activity mit grundlegenden Funktionen erstellt
+*/
+
 public class RegistrationActivity extends AppCompatActivity {
 
     private UserRegisterTask registerTask = null;

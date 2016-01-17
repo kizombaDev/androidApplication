@@ -31,6 +31,13 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
+/*
+* Datei: NavigationActivity  Autor: Marcel
+* Datum: 17.12  Version: <Versionsnummer>
+* Historie:
+* 17.12: Marcel Activity mit grundlegenden Funktionen erstellt
+*/
+
 public class NavigationActivity extends AppCompatActivity implements LocationListener, SensorEventListener {
 
     private GLSurfaceView glArrowSurfaceView;

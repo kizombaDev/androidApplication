@@ -10,6 +10,11 @@ import java.io.IOException;
 
 
 /**
+ * Datei: CameraSurfaceView  Autor: Marcel
+ * Datum: 22.12  Version: <Versionsnummer>
+ * Historie:
+ * 16.12: Marcel Erstellung der Klasse
+ *
  * Diese Klasse stellt eine SurfaceView zur Verfügung, welche innerhalb der View gerendert wird.
  * Diese Klasse CameraView nutzt intern die Klasse android.hardware.Camera, welche ab der Android Version 5.0 als veraltet gilt.
  * Da wir in der Vorlesung jedoch gezielt für Android 4.x entwickeln sollten nutzen wir diese Klasse trotzdem.

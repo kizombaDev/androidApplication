@@ -14,6 +14,13 @@ import com.example.marce.FWPFApp.Helper.Globals;
 import com.example.marce.FWPFApp.R;
 import com.example.marce.FWPFApp.Service.LocationService;
 
+/*
+* Datei: MainActivity  Autor: Marcel
+* Datum: 17.12  Version: <Versionsnummer>
+* Historie:
+* 17.12: Marcel Activity mit grundlegenden Funktionen erstellt
+*/
+
 public class MainActivity extends AppCompatActivity {
 
     private static int registerActivityRequestCode = 11;

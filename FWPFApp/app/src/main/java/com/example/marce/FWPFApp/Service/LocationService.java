@@ -16,11 +16,16 @@ import com.example.marce.FWPFApp.Helper.Globals;
 import com.example.marce.FWPFApp.ServerCommunication.Requests.UpdateMyCurrentLocationPutRequest;
 
 /**
- * Created by Marcel Swoboda
  * Der LocationService schickt die aktuellen Standortdaten an den Server
  * Sobald neue Standortdaten vorliegen wir die Methoe onLocationChanged vom LocationManager aufgerufen.
  * Der Server kann den Client anhand einer ID, welcher der Client bei der Anmeldung erhalten hat und
  * sich in den  SharedPreferences speichert, zuordnen.
+ *
+ * Datei: LocationService  Autor: Marcel
+ * Datum: 22.12  Version: <Versionsnummer>
+ * Historie:
+ * 20.12: Marcel Erstellung der Klasse
+ * 27.12: Marcel Zeitinterval für den LocationManager verkleinert
  */
 
 public class LocationService extends Service  implements LocationListener {

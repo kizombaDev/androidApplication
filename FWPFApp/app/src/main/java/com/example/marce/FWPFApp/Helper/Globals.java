@@ -2,6 +2,15 @@ package com.example.marce.FWPFApp.Helper;
 
 import android.os.Build;
 
+/**
+ * In diese Klasse werden Keys gespeichert die an verschiedenen Stellen verwendet werden
+ * <p/>
+ * Datei: Globals  Autor: Marcel
+ * Datum: 22.12  Version: <Versionsnummer>
+ * Historie:
+ * 17.12: Marcel Erstellung der Klasse
+ */
+
 public class Globals {
     public static String navigationActitivyIntend()
     {

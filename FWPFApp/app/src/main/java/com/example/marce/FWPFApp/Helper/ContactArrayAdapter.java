@@ -18,7 +18,10 @@ import com.example.marce.FWPFApp.R;
 import java.util.List;
 
 /**
- * Created by Marcel Swoboda
+ * * Datei: ContactArrayAdapter  Autor: Marcel
+ * Datum: 22.12  Version: <Versionsnummer>
+ * Historie:
+ * 18.12: Marcel Erstellung der Klasse
  */
 public class ContactArrayAdapter extends ArrayAdapter<Contact> {
     private final Context context;

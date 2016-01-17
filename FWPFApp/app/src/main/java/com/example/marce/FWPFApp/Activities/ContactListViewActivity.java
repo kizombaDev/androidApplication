@@ -43,9 +43,13 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-/**
- * Created by Marcel Swoboda
- */
+/*
+* Datei: ContactListViewActivity  Autor: Marcel
+* Datum: 17.12   Version: <Versionsnummer>
+* Historie:
+* 17.12: Marcel Activity mit grundlegenden Funktionen erstellt
+*
+*/
 
 public class ContactListViewActivity extends AppCompatActivity implements LocationListener, SensorEventListener {
 
@@ -102,7 +106,7 @@ public class ContactListViewActivity extends AppCompatActivity implements Locati
                 });
             }
         };
-        contactUpdateTimer.schedule(doAsynchronousTask, 0, 5000);
+        contactUpdateTimer.schedule(doAsynchronousTask, 0, 100000);
     }
 
     private void stopContactUpdateTrigger() {

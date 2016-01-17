@@ -6,6 +6,13 @@ import android.os.Parcelable;
 
 import java.util.Date;
 
+/*
+* Datei: Contact  Autor: Marcel
+* Datum: 17.12  Version: <Versionsnummer>
+* Historie:
+* 17.12: Marcel Klasse mit ersten Getter und Settern erstellt
+*/
+
 public class Contact implements Parcelable {
     private String id;
     private String name;

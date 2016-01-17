@@ -3,8 +3,15 @@ package com.example.marce.FWPFApp;
 import android.location.Location;
 
 /**
- * Created by marce on 09.12.2015.
+ * In dieser Klasse sind Sample GPS Daten hinterlegt
+ * Diese werden zum Testen verwendet.
+ *
+ * Datei: SampleLocations  Autor: Marcel
+ * Datum: 22.12  Version: <Versionsnummer>
+ * Historie:
+ * 20.12: Marcel Hinzufügen der GPS-Daten
  */
+
 public class SampleLocations {
 
     public static Location getBerlin() {
@@ -34,12 +41,4 @@ public class SampleLocations {
         locBerlin.setLongitude(11.077551);
         return locBerlin;
     }
-
-    public static Location getSchnaittach() {
-        Location locBerlin = new Location("");
-        locBerlin.setLatitude(49.573395);
-        locBerlin.setLongitude(11.354947);
-        return locBerlin;
-    }
-
 }
