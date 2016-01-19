@@ -2,9 +2,7 @@ package com.example.marce.FWPFApp.OpenGL;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView.Renderer;
-
 import com.example.marce.FWPFApp.OpenGL.Text.GLText;
-
 import java.text.DecimalFormat;
 import java.util.Date;
 
@@ -40,7 +38,8 @@ public class NavigationTextureRenderer implements Renderer {
         // clear Screen and Depth Buffer
         gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 
-        gl.glMatrixMode(GL10.GL_MODELVIEW);           // Activate Model View Matrix
+        // Activate Model View Matrix
+        gl.glMatrixMode(GL10.GL_MODELVIEW);
 
         // Reset the Modelview Matrix
         gl.glLoadIdentity();
@@ -52,17 +51,26 @@ public class NavigationTextureRenderer implements Renderer {
         // enable texture + alpha blending
         // NOTE: this is required for text rendering! we could incorporate it into
         // the GLText class, but then it would be called multiple times (which impacts performance).
-        gl.glEnable(GL10.GL_TEXTURE_2D);              // Enable Texture Mapping
-        gl.glEnable(GL10.GL_BLEND);                   // Enable Alpha Blend
-        gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);  // Set Alpha Blend Function
+        gl.glEnable(GL10.GL_TEXTURE_2D);
+        gl.glEnable(GL10.GL_BLEND);
+        gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 
-        // TEST: render the entire font texture
-        gl.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);         // Set Color to Use
-        //glText.drawTexture(width, height);            // Draw the Entire Texture
-
-        // TEST: render some strings with the font
         glText.begin(1.0f, 1.0f, 1.0f, 1.0f);         // Begin Text Rendering (Set Color WHITE)
+        drawContactName();
+        drawDistance();
+        drawLastUpdate();
+        glText.end();                                 // End Text Rendering
+
+        // disable texture + alpha
+        gl.glDisable(GL10.GL_BLEND);                  // Disable Alpha Blend
+        gl.glDisable(GL10.GL_TEXTURE_2D);             // Disable Texture Mapping
+    }
+
+    private void drawContactName() {
         glText.draw(contactName, 10, 120);
+    }
+
+    private void drawDistance() {
         if (distanceInMeters > 0) {
             float distance = distanceInMeters;
             String units = " m";
@@ -73,13 +81,14 @@ public class NavigationTextureRenderer implements Renderer {
             String distanceString = new DecimalFormat("0.00").format(distance) + units;
             glText.draw("Entfernung: " + distanceString, 10, 60);
         }
-        if (locationUpdateTime != null)
-            glText.draw("Letzte Aktualisierung: vor " + getLastUpdateString(), 10, 0);
-        glText.end();                                   // End Text Rendering
+    }
 
-        // disable texture + alpha
-        gl.glDisable(GL10.GL_BLEND);                  // Disable Alpha Blend
-        gl.glDisable(GL10.GL_TEXTURE_2D);             // Disable Texture Mapping
+    private void drawLastUpdate() {
+        if (locationUpdateTime != null) {
+            glText.draw("Letzte Aktualisierung: vor " + getLastUpdateString(), 10, 0);
+        } else {
+            glText.draw("Letzte Aktualisierung: N/A", 10, 0);
+        }
     }
 
     private String getLastUpdateString() {
@@ -112,7 +121,8 @@ public class NavigationTextureRenderer implements Renderer {
     }
 
     private void updateTexture(GL10 gl, int width, int height) {
-        gl.glOrthof(                                    // Set Ortho Projection (Left,Right,Bottom,Top,Front,Back)
+        // Set Ortho Projection (Left,Right,Bottom,Top,Front,Back)
+        gl.glOrthof(
                 0, width,
                 0, height,
                 1.0f, -1.0f
@@ -121,16 +131,10 @@ public class NavigationTextureRenderer implements Renderer {
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-        // Set the background frame color
-        //gl.glClearColor( 0.5f, 0.5f, 0.5f, 1.0f );
-
-        // Create the GLText
+        // Create the GLText; This GLText instance will be used for all text renderings
         glText = new GLText(gl, activityContext.getAssets());
 
         // Load the font from file (set size + padding), creates the texture
-        // NOTE: after a successful call to this the font is ready for rendering!
-        glText.load("tahoma.ttf", 60, 2, 2);  // Create Font (Height: 14 Pixels / X+Y Padding 2 Pixels)
+        glText.load("tahoma.ttf", 60, 2, 2);  // Create Font (Height: 60 Pixels / X+Y Padding 2 Pixels)
     }
-
-
 }

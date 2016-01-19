@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using Webserver.Models;
+using Webserver.Utils;
 
 namespace Webserver.Controllers
 {
@@ -27,7 +28,17 @@ namespace Webserver.Controllers
                 return BadRequest(ModelState);
             }
 
-            databaseContext.Users.Add(user);
+            user.Normalize();
+            var existingUser = await databaseContext.Users.FirstOrDefaultAsync(x => x.PhoneNumber == user.PhoneNumber);
+            if (existingUser != null)
+            {
+                existingUser.Username = user.Username;
+                user = existingUser;
+            }
+            else
+            {
+                databaseContext.Users.Add(user);
+            }
 
             try
             {

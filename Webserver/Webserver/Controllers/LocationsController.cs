@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using Webserver.Models;
+using Webserver.Utils;
 
 namespace Webserver.Controllers
 {
@@ -24,13 +25,14 @@ namespace Webserver.Controllers
             {
                 return BadRequest();
             }
-
+            var list = databaseContext.Users.ToList();
             var originalUser = await databaseContext.Users.FindAsync(id);
             if (originalUser == null)
             {
                 return NotFound();
             }
 
+            user.Normalize();
             originalUser.Longitude = user.Longitude;
             originalUser.Latitude = user.Latitude;
             originalUser.LocationUpdateTime = user.LocationUpdateTime;
