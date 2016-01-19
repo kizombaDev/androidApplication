@@ -49,7 +49,7 @@ import java.util.TimerTask;
 * This class uses the location and the sensor manager
 *
 * Datei: ContactListViewActivity  Autor: Marcel
-* Datum: 17.12   Version: <Versionsnummer>
+* Datum: 17.12   Version: 1.4
 * Historie:
 * 02.01.: Patrick integrates the task to get the current location data for all contacts
 * 29.12: Marcel fix a bug contactsWithLocation is null
@@ -131,7 +131,7 @@ public class ContactListViewActivity extends AppCompatActivity implements Locati
     * transforms the request response json to a updated list of contacts to update the view
     *
     * Klasse: GetAllContactsLocationDataTask  Autor: Patrick
-    * Datum: 18.12.2015
+    * Datum: 18.12.2015 Version: 1.1
     * Historie:
     * 02.01.16: request response was integrated
     * 18.12.15: class was created and implemented with the samples

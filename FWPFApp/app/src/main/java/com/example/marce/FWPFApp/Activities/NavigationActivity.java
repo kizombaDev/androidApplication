@@ -36,7 +36,7 @@ import java.util.TimerTask;
 * this class handle the big blue navigation arrow
 *
 * Datei: NavigationActivity  Autor: Marcel
-* Datum: 17.12  Version: <Versionsnummer>
+* Datum: 17.12  Version: 1.6
 * Historie:
 * 02.01.16: Patrick integrates the task
 * 16.01: Marcel improve the naming
@@ -291,7 +291,7 @@ public class NavigationActivity extends AppCompatActivity implements LocationLis
     * on data receive the information in the view is updated
     *
     * Klasse: GetContactLocationDataTask  Autor: Patrick
-    * Datum: 18.12.2015
+    * Datum: 18.12.2015 Version: 1.1
     * Historie:
     * 02.01.16: class was implemented
     * 18.12.15: class was created

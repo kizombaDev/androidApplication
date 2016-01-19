@@ -24,7 +24,7 @@ import com.example.marce.FWPFApp.Service.LocationService;
 * if the gps is dislabed the app ask the user to enable the gps
 *
 * Datei: MainActivity  Autor: Marcel
-* Datum: 17.12  Version: <Versionsnummer>
+* Datum: 17.12  Version: 1.1
 * Historie:
 * 18.12: Marcel add the dialog "enable gps"
 * 17.12: Marcel creates the class*
