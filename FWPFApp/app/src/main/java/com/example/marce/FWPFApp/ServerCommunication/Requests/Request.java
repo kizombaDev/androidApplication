@@ -14,7 +14,7 @@ import java.io.InputStreamReader;
 * it stores the serverurl and offers functions to transform the request responses to json objects/arrays
 *
 * Datei: Request  Autor: Patrick
-* Datum: 25.12.2015
+* Datum: 25.12.2015 Version: 1.2
 * Historie:
 * 31.12.15: the json reading functions were moved from the subclasses to this class
 * 29.12.15: class implemented

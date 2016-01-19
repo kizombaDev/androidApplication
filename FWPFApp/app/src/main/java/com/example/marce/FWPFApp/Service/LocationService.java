@@ -22,7 +22,7 @@ import com.example.marce.FWPFApp.ServerCommunication.Requests.UpdateMyCurrentLoc
  * This id is saved in the sharedPreferences
  * <p/>
  * Datei: LocationService  Autor: Marcel
- * Datum: 22.12  Version: <Versionsnummer>
+ * Datum: 22.12  Version: 1.3
  * Historie:
  * 02.01.16: Patrick add the update task
  * 27.12: Marcel change the timing interval of the locationManager
@@ -109,7 +109,7 @@ public class LocationService extends Service implements LocationListener {
     * Task that triggers the update my location put request
     *
     * Klasse: UpdateMyLocationTask  Autor: Patrick
-    * Datum: 02.12.2015
+    * Datum: 02.12.2015 Version: 1.0
     * Historie:
     * 02.01.16: class created and implemented
     */

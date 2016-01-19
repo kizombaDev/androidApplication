@@ -17,7 +17,7 @@ import java.net.URL;
 * registration data (Username, Phonenumber) is sent the the server and a unique id from the server is received
 *
 * Datei: RegisterMyselfAndGetMyIdPostRequest  Autor: Patrick
-* Datum: 25.12.2015
+* Datum: 25.12.2015 Version: 1.1
 * Historie:
 * 29.12.15: class implemented
 * 25.12.15: class created

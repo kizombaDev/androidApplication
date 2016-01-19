@@ -18,7 +18,7 @@ import java.net.URL;
 * that use the app to use this data in the contactListViewActivity
 *
 * Datei: GetAllContactsLocationDataPostRequest  Autor: Patrick
-* Datum: 25.12.2015
+* Datum: 25.12.2015 Version: 1.3
 * Historie:
 * 31.12.16: another bug fix with the json
 * 30.12.16: bug fix

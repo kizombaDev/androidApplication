@@ -22,7 +22,7 @@ import java.util.Date;
 * used in the navigationActivity to update data for the contact to navigate
 *
 * Datei: GetContactLocationDataPostRequest  Autor: Patrick
-* Datum: 25.12.2015
+* Datum: 25.12.2015 Version: 1.2
 * Historie:
 * 15.01.16: add "LocationUpdateTime"-Handling
 * 29.12.15: class implemented

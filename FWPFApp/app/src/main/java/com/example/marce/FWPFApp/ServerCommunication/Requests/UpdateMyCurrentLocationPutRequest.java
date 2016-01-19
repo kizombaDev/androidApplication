@@ -22,7 +22,7 @@ import java.util.Date;
 * no response, because just updates my location and doesnt expect an anserwer
 *
 * Datei: UpdateMyCurrentLocationPutRequest  Autor: Patrick
-* Datum: 25.12.2015
+* Datum: 25.12.2015 Version: 1.2
 * Historie:
 * 15.01.15: "LocationUpdateTime" was added
 * 29.12.15: class was implemented
