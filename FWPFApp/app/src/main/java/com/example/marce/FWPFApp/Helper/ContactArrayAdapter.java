@@ -21,6 +21,8 @@ import java.util.List;
  * Datei: ContactArrayAdapter  Autor: Marcel
  * Datum: 22.12  Version: <Versionsnummer>
  * Historie:
+ * 29.12: Marcel refactoring: extract the distance calucation into a method
+ * 19.12: Marcel refactor/improve the naming
  * 18.12: Marcel creates the class
  */
 public class ContactArrayAdapter extends ArrayAdapter<Contact> {

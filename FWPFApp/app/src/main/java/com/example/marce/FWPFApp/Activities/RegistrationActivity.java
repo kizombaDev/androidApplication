@@ -34,7 +34,7 @@ import org.json.JSONObject;
 * Datei: RegistrationActivity  Autor: Marcel
 * Datum: 17.12   Version: <Versionsnummer>
 * Historie:
-* 17.12: Marcel creates the activity
+* 17.12: Marcel creates the activity and add the logic
 */
 
 public class RegistrationActivity extends AppCompatActivity {

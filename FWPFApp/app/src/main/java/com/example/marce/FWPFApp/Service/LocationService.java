@@ -24,8 +24,9 @@ import com.example.marce.FWPFApp.ServerCommunication.Requests.UpdateMyCurrentLoc
  * Datei: LocationService  Autor: Marcel
  * Datum: 22.12  Version: <Versionsnummer>
  * Historie:
- * 20.12: Marcel creates the class
  * 27.12: Marcel change the timing interval of the locationManager
+ * 19.12: Marcel fix a nullreference bug if the serverCommuncationManger is null and a new location is available
+ * 19.12: Marcel creates the class
  */
 
 public class LocationService extends Service implements LocationListener {

@@ -14,10 +14,10 @@ import java.io.IOException;
  * the cameraSurfaceView use the android.hardware.camera, to render the camera preview
  * this camera class is deprected from anrdoid 5.x
  * in the lecture we are develop apps for android 4.x so we used this class anyway
- * <p/>
  * Datei: CameraSurfaceView  Autor: Marcel
  * Datum: 22.12  Version: <Versionsnummer>
  * Historie:
+ * 19.12: Marcel add the cameraview logic
  * 16.12: Marcel creats the class
  */
 public class CameraSurfaceView extends SurfaceView implements Callback {

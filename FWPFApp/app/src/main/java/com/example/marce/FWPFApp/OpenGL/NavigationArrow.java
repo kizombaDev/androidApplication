@@ -15,9 +15,9 @@ import javax.microedition.khronos.opengles.GL10;
  * Datei: NavigationArrow  Autor: Marcel
  * Datum: 19.12  Version: <Versionsnummer>
  * Historie:
- * 19.12: Marcel create a 2D arrow
- * 20.12: Marcel transform the 2D arrow to a 3D arrow
- * 27.12: Marcel change the color of the arrow
+ * 26.12: Marcel change the color of the arrow
+ * 26.12: Marcel transform the 2D arrow to a 3D arrow
+ * 20.12: Marcel create a 2D arrow
  */
 
 public class NavigationArrow {

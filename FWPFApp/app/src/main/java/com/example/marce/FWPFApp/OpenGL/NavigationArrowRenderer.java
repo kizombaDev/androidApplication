@@ -12,10 +12,12 @@ import javax.microedition.khronos.opengles.GL10;
  * Datei: NavigationArrowRenderer  Autor: Marcel
  * Datum: 17.12  Version: <Versionsnummer>
  * Historie:
- * 17.12: Marcel creates the class
- * 17.12: Marcel arrow the arrow (no rotation)
- * 19.12: Marcel rotate the arrow in the z direction
- * 22.12: Marcel rotate the arrow in the x direction
+ * 10.01: Marcel improve the rotation logic
+ * 26.12: Marcel rotate the arrow in the z direction
+ * 26.12: Marcel rotate the arrow in the x direction
+ * 20.12: Marcel arrow the arrow (no rotation)
+ * 20.12: Marcel creates the class
+
  */
 
 public class NavigationArrowRenderer implements Renderer {

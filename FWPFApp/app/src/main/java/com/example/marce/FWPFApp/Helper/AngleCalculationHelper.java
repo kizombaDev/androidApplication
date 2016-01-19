@@ -14,7 +14,8 @@ import android.hardware.SensorManager;
 * Datei: NavigationActivity  Autor: Marcel
 * Datum: 22.12  Version: <Versionsnummer>
 * Historie:
-* 22.12: Marcel create the class (this functions are taken out from an activity)
+* 10.01: Marcel remove logging
+* 20.12: Marcel create the class (this functions are taken out from an activity)
 *
 */
 

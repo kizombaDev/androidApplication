@@ -26,7 +26,8 @@ import com.example.marce.FWPFApp.Service.LocationService;
 * Datei: MainActivity  Autor: Marcel
 * Datum: 17.12  Version: <Versionsnummer>
 * Historie:
-* 17.12: Marcel creates the class
+* 18.12: Marcel add the dialog "enable gps"
+* 17.12: Marcel creates the class*
 */
 
 public class MainActivity extends AppCompatActivity {

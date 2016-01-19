@@ -9,8 +9,8 @@ import android.location.Location;
  * Datei: SampleLocations  Autor: Marcel
  * Datum: 22.12  Version: <Versionsnummer>
  * Historie:
- * 20.12: Marcel creates the class
  * 21.12: Marcel add gps values
+ * 20.12: Marcel creates the class
  */
 
 public class SampleLocations {

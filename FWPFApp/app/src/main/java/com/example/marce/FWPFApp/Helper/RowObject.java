@@ -12,6 +12,7 @@ import com.example.marce.FWPFApp.DataObjects.Contact;
  * File: ContactArrayAdapter  Autor: Marcel
  * Datum: 22.12  Version: <Versionsnummer>
  * Historie:
+ * 26.12: Marcel improve the naming
  * 18.12: Marcel creats the class
  */
 

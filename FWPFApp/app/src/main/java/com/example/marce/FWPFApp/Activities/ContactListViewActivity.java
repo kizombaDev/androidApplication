@@ -51,6 +51,9 @@ import java.util.TimerTask;
 * Datei: ContactListViewActivity  Autor: Marcel
 * Datum: 17.12   Version: <Versionsnummer>
 * Historie:
+* 29.12: Marcel fix a bug contactsWithLocation is null
+* 20.12: Marcel remove the angle calculation into the helper class (AngleCalculationHelper)
+* 19.12: Marcel change the update time for a new location from the locationManager from 15000 to 1000ms
 * 17.12: Marcel creates the activity
 *
 */
@@ -105,7 +108,7 @@ public class ContactListViewActivity extends AppCompatActivity implements Locati
                 });
             }
         };
-        contactUpdateTimer.schedule(doAsynchronousTask, 0, 100000);
+        contactUpdateTimer.schedule(doAsynchronousTask, 0, 5000);
     }
 
     private void stopContactUpdateTrigger() {

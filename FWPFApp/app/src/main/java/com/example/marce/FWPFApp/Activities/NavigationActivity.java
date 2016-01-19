@@ -38,6 +38,11 @@ import java.util.TimerTask;
 * Datei: NavigationActivity  Autor: Marcel
 * Datum: 17.12  Version: <Versionsnummer>
 * Historie:
+* 16.01: Marcel improve the naming
+* 15.01: Marcel fix a bug: the second surfaceView was not stopped if the app state was changed to pause
+* 20.12: Marcel add the open gl arrow logic
+* 20.12: Marcel add the intent between the activities
+* 19.12: Marcel add the emulator switch for testing
 * 17.12: Marcel creates the class
 */
 
