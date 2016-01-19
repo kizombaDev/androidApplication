@@ -1,11 +1,17 @@
-// This is a OpenGL ES 1.0 dynamic font rendering system. It loads actual font
-// files, generates a font map (texture) from them, and allows rendering of
-// text strings.
-//
-// NOTE: the rendering portions of this class uses a sprite batcher in order
-// provide decent speed rendering. Also, rendering assumes a BOTTOM-LEFT
-// origin, and the (x,y) positions are relative to that, as well as the
-// bottom-left of the string to render.
+/* This file contains the GLText class.
+* This class loads a font file and creates a font map (texture) from it. It allows
+* to render strings using the loaded font.
+* An instance of SpriteBatch is used to render the text in decent speed. The rendering
+* assumes a bottom-left origin. All x- and y-positions are relative to this origin.
+*
+* Datei: GLText.java Autor: Ramandeep Singh
+* Datum: 13.01.2016 Version: 1.1
+*
+* Historie:
+* 19.01.2016 Ramandeep Singh:   Refactoring
+*                               Extracted smaller private methods
+*                               Removed code duplicates
+*/
 
 package com.example.marce.FWPFApp.OpenGL.Text;
 
@@ -18,6 +24,11 @@ import android.graphics.Typeface;
 import android.opengl.GLUtils;
 import android.support.annotation.NonNull;
 
+/**
+ * This class allows rendering of strings using OpenGL ES 1.0.
+ * At first use the load-method to load a TrueType font. After that draw can be used to draw a String.
+ * NOTE: Before using draw you should invoke beging. After drawing you should invoke end.
+ */
 public class GLText {
     //--Constants--//
     public final static int CHAR_START = 32;           // First Character (ASCII Code)

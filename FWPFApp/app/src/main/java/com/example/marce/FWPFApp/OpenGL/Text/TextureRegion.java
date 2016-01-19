@@ -1,3 +1,10 @@
+/* This file contains the TextureRegion class.
+* This class stores information about the U and V vectors (x,y) for the top-left-vertex
+* and the bottom-right-vertex of a texture.
+*
+* Datei: TextureRegion.java Autor: Ramandeep Singh
+* Datum: 13.01.2016 Version: 1.0
+*/
 package com.example.marce.FWPFApp.OpenGL.Text;
 
 class TextureRegion {

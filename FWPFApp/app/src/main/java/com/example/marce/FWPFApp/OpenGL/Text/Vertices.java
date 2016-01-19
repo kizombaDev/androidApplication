@@ -1,3 +1,14 @@
+/* This file contains the Vertices class.
+* This class is responsible to draw the specified area of an texture. The area is specified by
+* vertices and indices.
+*
+* Datei: Vertices.java Autor: Ramandeep Singh
+* Datum: 13.01.2016 Version: 1.1
+*
+* Historie:
+* 19.01.2016 Ramandeep Singh:   Refactoring
+*                               Removed code duplicates
+*/
 package com.example.marce.FWPFApp.OpenGL.Text;
 
 import java.nio.ByteBuffer;
@@ -7,6 +18,10 @@ import java.nio.ShortBuffer;
 
 import javax.microedition.khronos.opengles.GL10;
 
+/**
+ * This class is responsible to draw the specified area of an texture. The area can be defined
+ * using setVertices() and setIndices(). To execute the drawing invoke draw().
+ */
 public class Vertices {
    //--Constants--//
    final static int POSITION_CNT_2D = 2;              // Number of Components in Vertex Position for 2D
@@ -84,9 +99,9 @@ public class Vertices {
     * Perform all required binding/state changes before rendering batches.
     */
    public void bind() {
-      gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);                           // Enable Position in Vertices
-      vertices.position(0);                                                   // Set Vertex Buffer to Position
-      gl.glVertexPointer(POSITION_CNT_2D, GL10.GL_FLOAT, VERTEX_SIZE, vertices);   // Set Vertex Pointer
+      gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+      vertices.position(0);
+      gl.glVertexPointer(POSITION_CNT_2D, GL10.GL_FLOAT, VERTEX_SIZE, vertices);
 
       gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
       vertices.position(POSITION_CNT_2D);

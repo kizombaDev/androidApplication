@@ -1,3 +1,16 @@
+/* This file contains the NavigationTextureRenderer class.
+* This class implements the Renderer interface which is used by OpenGL to render frames.
+* The NavigationTextureRenderer allows to render information about the friend as Strings.
+* An instance of GLText is used to render these Strings.
+*
+* Datei: NavigationTextureRenderer.java Autor: Ramandeep Singh
+* Datum: 13.01.2016 Version: 1.1
+*
+* Historie:
+* 19.01.2016 Ramandeep Singh:   Refactoring
+*                               Extracted smaller private methods
+*                               Removed code duplicates
+*/
 package com.example.marce.FWPFApp.OpenGL;
 
 import android.content.Context;
@@ -11,6 +24,9 @@ import java.util.Date;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
+/**
+ * This class provides the possibility to render information about a friend on a GLSurfaceView.
+ */
 public class NavigationTextureRenderer implements Renderer {
     private GLText glText;
     private Context activityContext;

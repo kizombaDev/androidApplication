@@ -1,3 +1,15 @@
+/* This file contains the SpriteBatch class.
+* This class should be used to draw a region from a texture. The texture to use can be defined
+* by its id otherwise the texture which is currently attached to the GL10 instance will be used.
+*
+* Datei: SpriteBatch.java Autor: Ramandeep Singh
+* Datum: 13.01.2016 Version: 1.1
+*
+* Historie:
+* 19.01.2016 Ramandeep Singh:   Refactoring
+*                               Extracted smaller private methods
+*                               Removed code duplicates
+*/
 package com.example.marce.FWPFApp.OpenGL.Text;
 
 import javax.microedition.khronos.opengles.GL10;
@@ -51,7 +63,7 @@ public class SpriteBatch {
      * @param textureId The ID of the texture to use for the batch.
      */
     public void beginBatch(int textureId) {
-        gl.glBindTexture( GL10.GL_TEXTURE_2D, textureId );
+        gl.glBindTexture(GL10.GL_TEXTURE_2D, textureId);
         beginBatch();
    }
 
