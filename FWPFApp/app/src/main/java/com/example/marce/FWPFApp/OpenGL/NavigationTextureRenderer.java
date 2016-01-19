@@ -2,7 +2,9 @@ package com.example.marce.FWPFApp.OpenGL;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView.Renderer;
+
 import com.example.marce.FWPFApp.OpenGL.Text.GLText;
+
 import java.text.DecimalFormat;
 import java.util.Date;
 
@@ -29,7 +31,7 @@ public class NavigationTextureRenderer implements Renderer {
         this.distanceInMeters = distanceInMeters;
     }
 
-    public void setLastUpdate(Date locationUpdateTime) {
+    public void setLocationUpdateTime(Date locationUpdateTime) {
         this.locationUpdateTime = locationUpdateTime;
     }
 
