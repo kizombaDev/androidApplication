@@ -236,7 +236,7 @@ public class NavigationActivity extends AppCompatActivity implements LocationLis
         navigationTextureRenderer.setDistanceInMeters(currentDeviceLocation.distanceTo(contact.getLocation()));
 
         Date locationUpdateTime = contact.getLocationUpdateTime();
-        navigationTextureRenderer.setLastUpdate(locationUpdateTime);
+        navigationTextureRenderer.setLocationUpdateTime(locationUpdateTime);
     }
 
     private void registerSensors() {
