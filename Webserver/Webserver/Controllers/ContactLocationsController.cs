@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using Webserver.Models;
+using Webserver.Utils;
 
 namespace Webserver.Controllers
 {
@@ -14,6 +15,11 @@ namespace Webserver.Controllers
         [ResponseType(typeof (User[]))]
         public async Task<IHttpActionResult> Post(User[] users)
         {
+            foreach (var user in users)
+            {
+                user.Normalize();
+            }
+
             var phoneNumbers = users.Select(x => x.PhoneNumber).ToArray();
             var matchingUsers =
                 await databaseContext.Users.Where(x => phoneNumbers.Contains(x.PhoneNumber)).ToListAsync();
