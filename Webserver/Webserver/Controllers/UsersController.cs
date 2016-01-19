@@ -1,5 +1,15 @@
-﻿using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
+﻿/* This file contains the UsersController class.
+* This controller is responsible for all resources which are located under the path /users
+*
+* Datei: UsersController.cs Autor: Ramandeep Singh
+* Datum: 23.12.2015 Version: 1.0
+*
+* Historie:
+* 19.01.2016 Ramandeep Singh:   Added phone number normalization
+                                If user to create already exists the existing user will be updated.
+*/
+
+using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
@@ -9,10 +19,17 @@ using Webserver.Utils;
 
 namespace Webserver.Controllers
 {
+    /// <summary>
+    ///     This class defines methodes for resources which belong to /users
+    /// </summary>
     public class UsersController : ApiController
     {
         private readonly DatabaseContext databaseContext = new DatabaseContext();
 
+        /// <summary>
+        ///     Get all existing users with all properties.
+        /// </summary>
+        /// <returns>Returns an array of alle users.</returns>
         [ResponseType(typeof (User[]))]
         public async Task<IHttpActionResult> Get()
         {
@@ -20,6 +37,16 @@ namespace Webserver.Controllers
             return Ok(users);
         }
 
+        /// <summary>
+        ///     Creates a new user
+        /// </summary>
+        /// <param name="user">
+        ///     The user to create. The user should have at least a phone number and name.
+        /// </param>
+        /// <returns>
+        ///     Returns the crated user with all written properties and the generated ID if successful.
+        ///     If the user model is invalid a HTTP statuscode 400 will be returned.
+        /// </returns>
         [ResponseType(typeof (User))]
         public async Task<IHttpActionResult> PostUser(User user)
         {
@@ -40,22 +67,18 @@ namespace Webserver.Controllers
                 databaseContext.Users.Add(user);
             }
 
-            try
-            {
-                await databaseContext.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (UserExists(user.Id))
-                {
-                    return Conflict();
-                }
-                throw;
-            }
+            await databaseContext.SaveChangesAsync();
 
             return Ok(user);
         }
 
+        /// <summary>
+        ///     Deletes an existing user.
+        /// </summary>
+        /// <param name="id">The id of the user to delete.</param>
+        /// <returns>
+        ///     Returns the deleted user if successful. If no user exists with the given ID a HTTP statuscode 404 will be returned.
+        /// </returns>
         [ResponseType(typeof (User))]
         public async Task<IHttpActionResult> DeleteUser(int id)
         {
@@ -71,6 +94,9 @@ namespace Webserver.Controllers
             return Ok(user);
         }
 
+        /// <summary>
+        ///     Disposes the controller instance.
+        /// </summary>
         protected override void Dispose(bool disposing)
         {
             if (disposing)

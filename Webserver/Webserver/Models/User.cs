@@ -1,4 +1,11 @@
-﻿using System;
+﻿/* This file contains the User class.
+* This class stores all data about a specific user.
+*
+* Datei: User.cs Autor: Ramandeep Singh
+* Datum: 23.12.2015 Version: 1.0
+*/
+
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Newtonsoft.Json;
