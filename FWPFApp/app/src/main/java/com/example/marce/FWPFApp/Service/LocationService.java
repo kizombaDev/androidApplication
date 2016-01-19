@@ -24,6 +24,7 @@ import com.example.marce.FWPFApp.ServerCommunication.Requests.UpdateMyCurrentLoc
  * Datei: LocationService  Autor: Marcel
  * Datum: 22.12  Version: <Versionsnummer>
  * Historie:
+ * 02.01.16: Patrick add the update task
  * 27.12: Marcel change the timing interval of the locationManager
  * 19.12: Marcel fix a nullreference bug if the serverCommuncationManger is null and a new location is available
  * 19.12: Marcel creates the class
@@ -103,6 +104,15 @@ public class LocationService extends Service implements LocationListener {
 
     }
 
+    /*
+    *
+    * Task that triggers the update my location put request
+    *
+    * Klasse: UpdateMyLocationTask  Autor: Patrick
+    * Datum: 02.12.2015
+    * Historie:
+    * 02.01.16: class created and implemented
+    */
     public class UpdateMyLocationTask extends AsyncTask<Void, Void, Boolean> {
 
         private final Location location;
@@ -111,9 +121,12 @@ public class LocationService extends Service implements LocationListener {
             this.location = location;
         }
 
+        /*
+        * Auslesen der Id aus den SharedPreferences
+        * trigger request
+        */
         @Override
         protected Boolean doInBackground(Void... params) {
-            //Auslesen der Id aus den SharedPreferences
             SharedPreferences settings = getSharedPreferences(Globals.settingFile(), MODE_PRIVATE);
             String myId = settings.getString(Globals.settingUserId(), "-1");
             UpdateMyCurrentLocationPutRequest request = new UpdateMyCurrentLocationPutRequest(myId, location);

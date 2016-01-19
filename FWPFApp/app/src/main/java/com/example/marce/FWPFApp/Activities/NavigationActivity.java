@@ -38,6 +38,7 @@ import java.util.TimerTask;
 * Datei: NavigationActivity  Autor: Marcel
 * Datum: 17.12  Version: <Versionsnummer>
 * Historie:
+* 02.01.16: Patrick integrates the task
 * 16.01: Marcel improve the naming
 * 15.01: Marcel fix a bug: the second surfaceView was not stopped if the app state was changed to pause
 * 20.12: Marcel add the open gl arrow logic
@@ -92,6 +93,9 @@ public class NavigationActivity extends AppCompatActivity implements LocationLis
         initCameraView();
     }
 
+    /**
+     * trigger the task to update naviation data periodically
+     */
     private void startContactUpdateTrigger() {
         final Handler handler = new Handler();
         contactUpdateTimer = new Timer();
@@ -118,6 +122,9 @@ public class NavigationActivity extends AppCompatActivity implements LocationLis
         contactUpdateTimer.purge();
     }
 
+    /**
+     * execute the task to update naviation
+     */
     private void triggerGetContactLocationData() {
         GetContactLocationDataTask task = new GetContactLocationDataTask();
         task.execute((Void) null);
@@ -278,10 +285,21 @@ public class NavigationActivity extends AppCompatActivity implements LocationLis
         mSensorManager.unregisterListener(this);
     }
 
-
+    /*
+    *
+    * this class triggers the request to get location data for the current navigated contact
+    * on data receive the information in the view is updated
+    *
+    * Klasse: GetContactLocationDataTask  Autor: Patrick
+    * Datum: 18.12.2015
+    * Historie:
+    * 02.01.16: class was implemented
+    * 18.12.15: class was created
+    */
     public class GetContactLocationDataTask extends AsyncTask<Void, Void, Boolean> {
-
-
+        /**
+         * execute the request
+         */
         @Override
         protected Boolean doInBackground(Void... params) {
             GetContactLocationDataPostRequest request = new GetContactLocationDataPostRequest(contact.getId());
@@ -289,6 +307,9 @@ public class NavigationActivity extends AppCompatActivity implements LocationLis
             return true;
         }
 
+        /**
+         * trigger arrow and text to take the new information
+         */
         @Override
         protected void onPostExecute(final Boolean success) {
             updateGLArrow();

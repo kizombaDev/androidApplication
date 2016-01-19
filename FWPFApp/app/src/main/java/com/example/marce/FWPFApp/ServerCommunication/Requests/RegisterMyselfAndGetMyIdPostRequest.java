@@ -11,9 +11,18 @@ import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 
-/**
- * Created by Paddy on 25.12.2015.
- */
+/*
+*
+* this class represents the post request in the registrationActivity
+* registration data (Username, Phonenumber) is sent the the server and a unique id from the server is received
+*
+* Datei: RegisterMyselfAndGetMyIdPostRequest  Autor: Patrick
+* Datum: 25.12.2015
+* Historie:
+* 29.12.15: class implemented
+* 25.12.15: class created
+*/
+
 public class RegisterMyselfAndGetMyIdPostRequest extends PostRequest {
     private String urlPath = "/users";
     private JSONObject jsonToSend;
@@ -24,6 +33,9 @@ public class RegisterMyselfAndGetMyIdPostRequest extends PostRequest {
         setJsonToSend(username, phoneNumber);
     }
 
+    /**
+     * execute request and read response
+     */
     public JSONObject execute() {
         HttpURLConnection urlConnection = null;
         try {

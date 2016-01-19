@@ -51,6 +51,7 @@ import java.util.TimerTask;
 * Datei: ContactListViewActivity  Autor: Marcel
 * Datum: 17.12   Version: <Versionsnummer>
 * Historie:
+* 02.01.: Patrick integrates the task to get the current location data for all contacts
 * 29.12: Marcel fix a bug contactsWithLocation is null
 * 20.12: Marcel remove the angle calculation into the helper class (AngleCalculationHelper)
 * 19.12: Marcel change the update time for a new location from the locationManager from 15000 to 1000ms
@@ -89,7 +90,7 @@ public class ContactListViewActivity extends AppCompatActivity implements Locati
         angleCalculationHelper = new AngleCalculationHelper(300);
     }
 
-
+    // trigger data update (= request to get the data) every five seconds
     private void startContactUpdateTrigger() {
         final Handler handler = new Handler();
         contactUpdateTimer = new Timer();
@@ -116,12 +117,25 @@ public class ContactListViewActivity extends AppCompatActivity implements Locati
         contactUpdateTimer.purge();
     }
 
+    /**
+     * actual task triggering
+     */
     private void triggerGetAllContactsLocationData() {
         GetAllContactsLocationDataTask task = new GetAllContactsLocationDataTask(this);
         task.execute((Void) null);
     }
 
-
+    /*
+    *
+    * this class triggers the request to get location data for all contacts
+    * transforms the request response json to a updated list of contacts to update the view
+    *
+    * Klasse: GetAllContactsLocationDataTask  Autor: Patrick
+    * Datum: 18.12.2015
+    * Historie:
+    * 02.01.16: request response was integrated
+    * 18.12.15: class was created and implemented with the samples
+    */
     public class GetAllContactsLocationDataTask extends AsyncTask<Void, Void, Boolean> {
         private final Context context;
 
@@ -131,6 +145,9 @@ public class ContactListViewActivity extends AppCompatActivity implements Locati
             this.context = context;
         }
 
+        /**
+         * execute the request
+         */
         @Override
         protected Boolean doInBackground(Void... params) {
             PhonebookRetriever phonebookRetriever = new PhonebookRetriever(context);
@@ -141,6 +158,10 @@ public class ContactListViewActivity extends AppCompatActivity implements Locati
             return true;
         }
 
+        /**
+         * handle the request/task response
+         * transform the json to a new list of contacts with all information
+         */
         @Override
         protected void onPostExecute(final Boolean success) {
             List<Contact> contactsWithLocationList = new ArrayList<Contact>();

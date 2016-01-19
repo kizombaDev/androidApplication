@@ -15,9 +15,20 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/**
- * Created by Paddy on 25.12.2015.
- */
+/*
+*
+* this class represents the request to send/update my current location to the server
+* used from the locationService
+* no response, because just updates my location and doesnt expect an anserwer
+*
+* Datei: UpdateMyCurrentLocationPutRequest  Autor: Patrick
+* Datum: 25.12.2015
+* Historie:
+* 15.01.15: "LocationUpdateTime" was added
+* 29.12.15: class was implemented
+* 25.12.15: class created
+*/
+
 public class UpdateMyCurrentLocationPutRequest extends PutRequest {
     private String urlPath = "/locations/";
     private JSONObject jsonToSend;
@@ -27,6 +38,9 @@ public class UpdateMyCurrentLocationPutRequest extends PutRequest {
         setJsonToSend(myId, myLocation);
     }
 
+    /**
+     * set the json to send
+     */
     private void setJsonToSend(String myId, Location myLocation) {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
         String nowAsISO = dateFormat.format(new Date());
@@ -42,6 +56,9 @@ public class UpdateMyCurrentLocationPutRequest extends PutRequest {
         }
     }
 
+    /**
+     * execute the request
+     */
     public void execute() {
         HttpURLConnection urlConnection = null;
         try {

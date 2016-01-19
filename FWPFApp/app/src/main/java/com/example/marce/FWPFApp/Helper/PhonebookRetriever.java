@@ -5,9 +5,15 @@ import android.content.Context;
 import android.database.Cursor;
 import android.provider.ContactsContract;
 
-/**
- * Created by Patrick on 18.12.2015.
- */
+/*
+*
+* this class reads the local phonebook
+*
+* Datei: PhonebookRetriever  Autor: Patrick
+* Datum: 18.12.2015
+* Historie:
+* 18.12.15: class was created and implemented
+*/
 public class PhonebookRetriever {
     private Context context;
 

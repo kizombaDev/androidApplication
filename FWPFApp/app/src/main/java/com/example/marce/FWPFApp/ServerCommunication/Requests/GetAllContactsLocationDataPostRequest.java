@@ -12,9 +12,19 @@ import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 
-/**
- * Created by Paddy on 25.12.2015.
- */
+/*
+*
+* this class represents a http request to get current location data for all contacts of the phonebook
+* that use the app to use this data in the contactListViewActivity
+*
+* Datei: GetAllContactsLocationDataPostRequest  Autor: Patrick
+* Datum: 25.12.2015
+* Historie:
+* 31.12.16: another bug fix with the json
+* 30.12.16: bug fix
+* 29.12.15: class implemented
+* 25.12.15: class created
+*/
 public class GetAllContactsLocationDataPostRequest extends PostRequest {
     private String urlPath = "/contact-locations";
     private JSONArray jsonArrayToSend;
@@ -25,6 +35,9 @@ public class GetAllContactsLocationDataPostRequest extends PostRequest {
         setJsonArrayToSend(phoneNumbers);
     }
 
+    /**
+     * execute request and read response
+     */
     public JSONArray execute() {
         HttpURLConnection urlConnection = null;
         try {
@@ -40,7 +53,7 @@ public class GetAllContactsLocationDataPostRequest extends PostRequest {
             int responseCode = urlConnection.getResponseCode();
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 InputStream inputStream = urlConnection.getInputStream();
-                responseJsonArray = (JSONArray) readJSONArrayFromInputStream(inputStream);
+                responseJsonArray = (JSONArray) readJSONArrayFromInputStream(inputStream); //use function of superclass to read the response as json
             } else {
                 throw new Exception("not implemented");
             }
@@ -62,6 +75,9 @@ public class GetAllContactsLocationDataPostRequest extends PostRequest {
         return responseJsonArray;
     }
 
+    /**
+     * set the data to send
+     */
     public void setJsonArrayToSend(String[] phoneNumbers) {
         jsonArrayToSend = new JSONArray();
         JSONObject currentPhonenumberJson;

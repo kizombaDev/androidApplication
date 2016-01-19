@@ -16,9 +16,19 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/**
- * Created by Paddy on 25.12.2015.
- */
+/*
+*
+* this class represents the request to get the current location data for one single contact
+* used in the navigationActivity to update data for the contact to navigate
+*
+* Datei: GetContactLocationDataPostRequest  Autor: Patrick
+* Datum: 25.12.2015
+* Historie:
+* 15.01.16: add "LocationUpdateTime"-Handling
+* 29.12.15: class implemented
+* 25.12.15: class created
+*/
+
 public class GetContactLocationDataPostRequest extends PostRequest {
     private String urlPath = "/contact-locations/";
     private JSONObject responseJson;
@@ -27,6 +37,9 @@ public class GetContactLocationDataPostRequest extends PostRequest {
         this.requestUrl = serverUrl + urlPath + contactId;
     }
 
+    /**
+     * execute request and read response
+     */
     public void execute(Contact contact) {
         HttpURLConnection urlConnection = null;
         try {
@@ -39,7 +52,7 @@ public class GetContactLocationDataPostRequest extends PostRequest {
             int responseCode = urlConnection.getResponseCode();
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 InputStream inputStream = urlConnection.getInputStream();
-                responseJson = (JSONObject) readJSONObjectFromInputStream(inputStream);
+                responseJson = (JSONObject) readJSONObjectFromInputStream(inputStream); //parse response to json
 
                 Location location = new Location("");
                 location.setLatitude(Double.parseDouble(responseJson.getString("Latitude")));

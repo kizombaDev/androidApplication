@@ -34,6 +34,7 @@ import org.json.JSONObject;
 * Datei: RegistrationActivity  Autor: Marcel
 * Datum: 17.12   Version: <Versionsnummer>
 * Historie:
+* 02.01.: Patrick integrates registration the task
 * 17.12: Marcel creates the activity and add the logic
 */
 
@@ -211,9 +212,22 @@ public class RegistrationActivity extends AppCompatActivity {
         }
     }
 
+    /*
+    *
+    * Represents an asynchronous login/registration task used to authenticate
+    * the user, triggers the request
+    * receives the unique user id
+    * store this id in the shared preferences
+    *
+    * Klasse: UserRegisterTask  Autor: Patrick
+    * Datum: 18.12.2015
+    * Historie:
+    * 03.01.16: store in shared preferences
+    * 02.01.16: execute request and read response
+    * 18.12.15: class was created
+    */
     /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
+
      */
     public class UserRegisterTask extends AsyncTask<Void, Void, Boolean> {
 
@@ -227,6 +241,9 @@ public class RegistrationActivity extends AppCompatActivity {
             this.phoneNumber = phoneNumber;
         }
 
+        /**
+         * execute the registration request
+         */
         @Override
         protected Boolean doInBackground(Void... params) {
             try {
@@ -240,6 +257,9 @@ public class RegistrationActivity extends AppCompatActivity {
             return true;
         }
 
+        /**
+         * store the received id in the shared preferences after the task is executed
+         */
         @Override
         protected void onPostExecute(final Boolean success) {
             registerTask = null;
