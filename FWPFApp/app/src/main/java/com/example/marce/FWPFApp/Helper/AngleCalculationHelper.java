@@ -4,17 +4,18 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
 
+
 /*
+*
+* the android api delivers to float array which contains the angle values
+* This helper class calculates the angle values from the float array content
+* this functionality is used in two activities
+*
 * Datei: NavigationActivity  Autor: Marcel
 * Datum: 22.12  Version: <Versionsnummer>
 * Historie:
-* 22.12: Marcel Klasse erst (Funktinalität aus der Activity herausgezogen
+* 22.12: Marcel create the class (this functions are taken out from an activity)
 *
-* Von den Sensoren der Android API bekommt man zwei float-Arrays
-* Diese müssen dann noch in richtige Winkelangaben umgerechnet werden
-* Da diese Funktionalität in zwei Activities benötigt wird, wurde sie ausgelagert in eine Helper Klasse
-*
-* Dass sich die Pfeile nicht zu schnell drehen, wird die Winkelangabe nur alle x sekunden aktualisiert
 */
 
 public class AngleCalculationHelper {
@@ -27,9 +28,9 @@ public class AngleCalculationHelper {
     private float deviceInclinationAngle;
 
     /**
-     * Erstelt die Helper Klasse
+     * Creates the AngleCalculationHelper
      *
-     * @param sensorUpdateMilliSeconds Gibt an nach wie vielen ms die Winkelangaben aktualisiert werden sollen
+     * @param sensorUpdateMilliSeconds indicates the update interval of the angle value
      */
     public AngleCalculationHelper(long sensorUpdateMilliSeconds) {
         this.sensorUpdateMilliSeconds = sensorUpdateMilliSeconds;
@@ -58,14 +59,25 @@ public class AngleCalculationHelper {
         }
     }
 
+    /**
+     * Returns true if the Helper has angle values, otherwise false
+     *
+     * @return true if the helper has angle values, otherwise false
+     */
     public boolean hasDeviceAngles() {
         return hasDeviceDegree;
     }
 
+    /***
+     * @return Returns the Z-angle
+     */
     public float getDeviceAngleZ() {
         return deviceDegree;
     }
 
+    /**
+     * @return Return the X-angle
+     */
     public float getDeviceAngleX() {
         return deviceInclinationAngle;
     }

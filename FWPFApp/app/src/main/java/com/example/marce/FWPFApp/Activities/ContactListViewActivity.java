@@ -44,10 +44,14 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 /*
+* this activity show the list of all available contacts
+* each row shows a red arrow to the contact, the name of the contact and the distance to the contact
+* This class uses the location and the sensor manager
+*
 * Datei: ContactListViewActivity  Autor: Marcel
 * Datum: 17.12   Version: <Versionsnummer>
 * Historie:
-* 17.12: Marcel Activity mit grundlegenden Funktionen erstellt
+* 17.12: Marcel creates the activity
 *
 */
 
@@ -67,11 +71,10 @@ public class ContactListViewActivity extends AppCompatActivity implements Locati
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //Wir untersützen nur den Portrait-Modus
+        //the support only the protrait mode
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_user_list_view);
 
-        //LocationManager und SensorManager erstellen
         locationManager = (LocationManager)
                 getSystemService(Context.LOCATION_SERVICE);
 
@@ -79,7 +82,7 @@ public class ContactListViewActivity extends AppCompatActivity implements Locati
         accelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         magnetometer = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
 
-        //AngleCalculationHelper erstellen und angeben, dass die Winkelangaben alle 300 ms aktualisiert werden sollen
+        //The angle helper should update the angle every 300 ms
         angleCalculationHelper = new AngleCalculationHelper(300);
     }
 
@@ -87,19 +90,15 @@ public class ContactListViewActivity extends AppCompatActivity implements Locati
     private void startContactUpdateTrigger() {
         final Handler handler = new Handler();
         contactUpdateTimer = new Timer();
-        TimerTask doAsynchronousTask = new TimerTask()
-        {
+        TimerTask doAsynchronousTask = new TimerTask() {
             @Override
             public void run() {
                 handler.post(new Runnable() {
                     public void run() {
-                        try
-                        {
+                        try {
                             triggerGetAllContactsLocationData();
 
-                        }
-                        catch (Exception e)
-                        {
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
@@ -114,7 +113,7 @@ public class ContactListViewActivity extends AppCompatActivity implements Locati
         contactUpdateTimer.purge();
     }
 
-    private void triggerGetAllContactsLocationData(){
+    private void triggerGetAllContactsLocationData() {
         GetAllContactsLocationDataTask task = new GetAllContactsLocationDataTask(this);
         task.execute((Void) null);
     }
@@ -165,7 +164,7 @@ public class ContactListViewActivity extends AppCompatActivity implements Locati
 
                 } catch (JSONException e) {
                     e.printStackTrace();
-                } catch(ParseException e){
+                } catch (ParseException e) {
                     e.printStackTrace();
                 }
             }
@@ -191,6 +190,11 @@ public class ContactListViewActivity extends AppCompatActivity implements Locati
         }
     }
 
+    /**
+     * Create sample contacts for the listView
+     *
+     * @return four contacts with sample data
+     */
     @NonNull
     private Contact[] GenerateSampleContacts() {
         Contact[] result = new Contact[]{
@@ -203,6 +207,11 @@ public class ContactListViewActivity extends AppCompatActivity implements Locati
         return result;
     }
 
+    /**
+     * this method handles the click on a button
+     *
+     * @param userListView
+     */
     private void AddOnItemClickListener(ListView userListView) {
         userListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -236,9 +245,17 @@ public class ContactListViewActivity extends AppCompatActivity implements Locati
         startContactUpdateTrigger();
     }
 
+    /**
+     * this method is called by the location manager if the location has changed
+     * we have to send the new location the the contactArrayAdapter which updates the view
+     *
+     * @param location
+     */
     @Override
     public void onLocationChanged(Location location) {
-        contactArrayAdapter.locationChanged(location);
+        if (contactArrayAdapter != null) {
+            contactArrayAdapter.locationChanged(location);
+        }
     }
 
     @Override
@@ -250,15 +267,28 @@ public class ContactListViewActivity extends AppCompatActivity implements Locati
         isLocationProviderEnabled = true;
     }
 
+    /**
+     * if the user has disabled the gps the remove the distance text and the navigation arrow from the listview
+     *
+     * @param provider
+     */
     @Override
     public void onProviderDisabled(String provider) {
         isLocationProviderEnabled = false;
-        contactArrayAdapter.locationProviderDisabled();
+        if (contactArrayAdapter != null) {
+
+            contactArrayAdapter.locationProviderDisabled();
+        }
     }
 
+    /**
+     * this method is called by the sensor Manager if the manager has a new angle value
+     *
+     * @param event
+     */
     @Override
     public void onSensorChanged(SensorEvent event) {
-        if(contactArrayAdapter != null){
+        if (contactArrayAdapter != null) {
             angleCalculationHelper.setSensorEvent(event);
             if (angleCalculationHelper.hasDeviceAngles()) {
                 float deviceDegree = angleCalculationHelper.getDeviceAngleZ();
@@ -272,6 +302,9 @@ public class ContactListViewActivity extends AppCompatActivity implements Locati
 
     }
 
+    /**
+     * register all sensor Manager
+     */
     private void registerSensors() {
         try {
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 5, this);
@@ -284,6 +317,9 @@ public class ContactListViewActivity extends AppCompatActivity implements Locati
         mSensorManager.registerListener(this, magnetometer, SensorManager.SENSOR_DELAY_UI);
     }
 
+    /**
+     * unregister all SensorManager
+     */
     private void unregisterSensors() {
         try {
             locationManager.removeUpdates(this);

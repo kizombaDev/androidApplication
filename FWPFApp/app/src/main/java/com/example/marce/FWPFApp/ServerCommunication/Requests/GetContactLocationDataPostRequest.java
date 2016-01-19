@@ -23,7 +23,7 @@ public class GetContactLocationDataPostRequest extends PostRequest {
     private String urlPath = "/contact-locations/";
     private JSONObject responseJson;
 
-    public GetContactLocationDataPostRequest(String contactId){
+    public GetContactLocationDataPostRequest(String contactId) {
         this.requestUrl = serverUrl + urlPath + contactId;
     }
 
@@ -51,8 +51,7 @@ public class GetContactLocationDataPostRequest extends PostRequest {
                 Date locationUpdateTime = df1.parse(string1);
                 contact.setLocationUpdateTime(locationUpdateTime);
 
-            }
-            else{
+            } else {
                 throw new Exception("not implemented");
             }
         } catch (MalformedURLException e) {

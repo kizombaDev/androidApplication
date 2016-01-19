@@ -22,27 +22,27 @@ public class UpdateMyCurrentLocationPutRequest extends PutRequest {
     private String urlPath = "/locations/";
     private JSONObject jsonToSend;
 
-    public UpdateMyCurrentLocationPutRequest(String myId, Location myLocation){
+    public UpdateMyCurrentLocationPutRequest(String myId, Location myLocation) {
         this.requestUrl = this.serverUrl + urlPath + myId;
         setJsonToSend(myId, myLocation);
     }
 
-    private void setJsonToSend(String myId, Location myLocation){
+    private void setJsonToSend(String myId, Location myLocation) {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
         String nowAsISO = dateFormat.format(new Date());
 
         jsonToSend = new JSONObject();
-        try{
+        try {
             jsonToSend.put("Id", myId);
             jsonToSend.put("Longitude", myLocation.getLongitude());
             jsonToSend.put("Latitude", myLocation.getLatitude());
             jsonToSend.put("LocationUpdateTime", nowAsISO);
-        }catch (JSONException e){
+        } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
-    public void execute(){
+    public void execute() {
         HttpURLConnection urlConnection = null;
         try {
             URL urlToRequest = new URL(this.requestUrl);

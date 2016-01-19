@@ -3,13 +3,14 @@ package com.example.marce.FWPFApp;
 import android.location.Location;
 
 /**
- * In dieser Klasse sind Sample GPS Daten hinterlegt
- * Diese werden zum Testen verwendet.
- *
+ * This class contains cample gps values
+ * This gps values are used to test the application
+ * <p/>
  * Datei: SampleLocations  Autor: Marcel
  * Datum: 22.12  Version: <Versionsnummer>
  * Historie:
- * 20.12: Marcel Hinzufügen der GPS-Daten
+ * 20.12: Marcel creates the class
+ * 21.12: Marcel add gps values
  */
 
 public class SampleLocations {

@@ -12,10 +12,10 @@ import javax.microedition.khronos.opengles.GL10;
  * Datei: NavigationArrowRenderer  Autor: Marcel
  * Datum: 17.12  Version: <Versionsnummer>
  * Historie:
- * 17.12: Marcel Erstellung der Klasse
- * 17.12: Marcel Pfeil wird nur gezeichnet nicht gedreht
- * 19.12: Marcel Pfeil dreht sich in die Z Richtung
- * 22.12: Marcel Pfeil dreht sich jetzt in zwei Richtungen
+ * 17.12: Marcel creates the class
+ * 17.12: Marcel arrow the arrow (no rotation)
+ * 19.12: Marcel rotate the arrow in the z direction
+ * 22.12: Marcel rotate the arrow in the x direction
  */
 
 public class NavigationArrowRenderer implements Renderer {
@@ -28,8 +28,8 @@ public class NavigationArrowRenderer implements Renderer {
     public NavigationArrowRenderer() {
         this.navigationArrow = new NavigationArrow();
 
-        //Im Emulator liefert der Sensor keien Winkelinformationen der Pfeil soll aber trotzdem angezeigt werden
-        //Dies ist nur für das Testen im Emulator wichtig
+        //the emulator sends no sensor values (angle informations) to the app
+        //if the app runs into the emulator we still draw the arrow this is important for testing
         if (Globals.isEmulator()) {
             hasDeviceAngleZ = true;
             hasDeviceAngleX = true;
@@ -38,32 +38,32 @@ public class NavigationArrowRenderer implements Renderer {
 
     @Override
     public void onDrawFrame(GL10 gl) {
-        // Screen leeren
+        // clean the screen
         gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 
-        gl.glMatrixMode(GL10.GL_MODELVIEW); // Aktiviere Model View Matrix
+        gl.glMatrixMode(GL10.GL_MODELVIEW); // activate Model View Matrix
 
-        // Zurücksetzen der Modelview Matrix
+        // reset the Modelview Matrix
         gl.glLoadIdentity();
 
         drawArrow(gl);
     }
 
     private void drawArrow(GL10 gl) {
-        //Zeichne den Pfeil erst wenn beide Winkelangaben vorhadnen sind
+        //draw the arrow if the angles are available
         if (hasDeviceAngleZ && hasDeviceAngleX) {
-            // Verschiebe 5 Einheiten nach innen
+
             gl.glTranslatef(0.0f, 0.0f, -5.0f);
 
-            //unter 300Grad wird der Pfeil nicht mehr schön dargestellt
+            //angle under 300° are pointless
             if (deviceAngleX < 300 && deviceAngleX > 90) {
                 deviceAngleX = 300;
             }
-            //Drehe den Pfeil
+            //rotate the arrow
             gl.glRotatef(deviceAngleZ, 0.0f, 0.0f, 1.0f);
             gl.glRotatef(deviceAngleX, 1.0f, 0.0f, 0.0f);
 
-            //Zeichnet den Pfeil
+            //draw the arrow
             navigationArrow.draw(gl);
         }
     }
@@ -74,15 +74,15 @@ public class NavigationArrowRenderer implements Renderer {
             height = 1;
         }
 
-        gl.glViewport(0, 0, width, height);    //Setzt den aktuellen Viewport zurück
-        gl.glMatrixMode(GL10.GL_PROJECTION);    // Aktivieren der  Projection Matrix
-        gl.glLoadIdentity();                    //Setzt die Projektions Matrix zurück
+        gl.glViewport(0, 0, width, height);    //reset the actual viewport
+        gl.glMatrixMode(GL10.GL_PROJECTION);   //activate the Projection Matrix
+        gl.glLoadIdentity();                   //reset the projection matrix
 
         updateArrow(gl, width, height);
     }
 
     private void updateArrow(GL10 gl, int width, int height) {
-        GLU.gluPerspective(gl, 45.0f, (float) width / (float)height, 0.1f, 100.0f);
+        GLU.gluPerspective(gl, 45.0f, (float) width / (float) height, 0.1f, 100.0f);
     }
 
     @Override

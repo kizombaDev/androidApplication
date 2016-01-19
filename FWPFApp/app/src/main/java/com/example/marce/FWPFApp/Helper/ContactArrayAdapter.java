@@ -18,10 +18,10 @@ import com.example.marce.FWPFApp.R;
 import java.util.List;
 
 /**
- * * Datei: ContactArrayAdapter  Autor: Marcel
+ * Datei: ContactArrayAdapter  Autor: Marcel
  * Datum: 22.12  Version: <Versionsnummer>
  * Historie:
- * 18.12: Marcel Erstellung der Klasse
+ * 18.12: Marcel creates the class
  */
 public class ContactArrayAdapter extends ArrayAdapter<Contact> {
     private final Context context;
@@ -37,9 +37,9 @@ public class ContactArrayAdapter extends ArrayAdapter<Contact> {
     }
 
     /**
-     * Erstellt für jeden Kontakt ein RowObject und speichert die Kontaktdaten dadrin
+     * creates for any contact a rowobject and save the contact into the rowObject
      *
-     * @param contacts Liste aller verfügbaren Kontakte
+     * @param contacts the list of contacts
      */
     private void initRowObjects(List<Contact> contacts) {
         for (int i = 0; i < rowObjects.length; i++) {
@@ -53,7 +53,7 @@ public class ContactArrayAdapter extends ArrayAdapter<Contact> {
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        //Setzt das Row-Layout der ListView; in dem Layout ist definiert wo das Icon (Pfeil) oder die Texte platziert sind
+        //set the row-lqyout of the listView; this layout definies the position of the icon (red arrow) and the text controls
         View rowView = inflater.inflate(R.layout.rowlayout, parent, false);
 
         TextView textView = (TextView) rowView.findViewById(R.id.ContactNameLabel);
@@ -75,10 +75,10 @@ public class ContactArrayAdapter extends ArrayAdapter<Contact> {
     }
 
     /**
-     * Es gibt neue eigene Standortdaten und die Entfernung zu den anderen Kontakten muss neu berechnet werden
+     * a new location is available and the distance to the other contac has du recalculate
      *
-     * @param location neuer eigener Standort
-     * @param position Index der Zeile in der ListView für die gerade die Methode aufgerufen wird
+     * @param location the new loaction
+     * @param position the index of the row in the listview
      */
     private void updateTheDistanceText(Location location, int position) {
         String distanceText;
@@ -94,9 +94,10 @@ public class ContactArrayAdapter extends ArrayAdapter<Contact> {
     }
 
     /**
-     * setzt eine neue eigene Location
-     * Daraufhin müssen die Entfernungsangaben neu berechnet werden
-     * @param location Neuer Standort
+     * set a new location value
+     * all distance info have to recalculate
+     *
+     * @param location the new location
      */
     public void locationChanged(Location location) {
         this.currentLocation = location;
@@ -106,9 +107,10 @@ public class ContactArrayAdapter extends ArrayAdapter<Contact> {
     }
 
     /**
-     * Es gibt eine neue Winkel vom Sensor
-     * Daraufhin müssen die roten Pfeile gedreht werden
-     * @param currentDegree Neue Winkelangabe
+     * a new angle is available
+     * all arrow have to rotate into the new direction
+     *
+     * @param currentDegree the new angle
      */
     public void deviceDegreeChanged(float currentDegree) {
         updateDeviceDegree(currentLocation, currentDegree);
@@ -128,8 +130,7 @@ public class ContactArrayAdapter extends ArrayAdapter<Contact> {
             float degreeToDestination = currentLocation.bearingTo(destination);
 
             currentCompassDegree = 180 + (degreeToDestination - currentDegree);
-            if(currentCompassDegree < 0)
-            {
+            if (currentCompassDegree < 0) {
                 currentCompassDegree += 360;
             }
 
@@ -143,8 +144,8 @@ public class ContactArrayAdapter extends ArrayAdapter<Contact> {
                 lastIconAngle -= 360;
             }
 
-            //Erstellt die Animation und setzt die Winkel angaben
-            //Der Pfeil soll von lastIconAngle nach nextIconAngle drehen
+            //ceates the animation and set the angles
+            //the animation rotate the arrow from the last angle to the next angle
             RotateAnimation ra = new RotateAnimation(
                     lastIconAngle,
                     nextIconAngle,
@@ -152,19 +153,17 @@ public class ContactArrayAdapter extends ArrayAdapter<Contact> {
                     Animation.RELATIVE_TO_SELF, 0.5f);
 
 
-            //Die Animation soll 210ms dauern
+            //the animation should take 210 ms
             ra.setDuration(210);
             ra.setFillAfter(true);
-
 
             RowObject currentRowObject = rowObjects[i];
             currentRowObject.getIcon().setVisibility(View.VISIBLE);
             currentRowObject.getIconBlack().setVisibility(View.INVISIBLE);
             currentRowObject.setLastIconAngle(currentCompassDegree);
 
-            //Start the animation
+            //start the animation
             currentRowObject.getIcon().startAnimation(ra);
-
         }
     }
 
@@ -177,8 +176,7 @@ public class ContactArrayAdapter extends ArrayAdapter<Contact> {
     }
 
     /**
-     * Sobald der GPS-Sensor deaktiviert wird, soll die ListView keien Infos mehr anzeigen
-     * d.h. die Pfeile werden grau und die Entfernungsangaben werden nicht mehr angezeigt
+     * if the gps sensor is deactivated the listview should not show infos (arrow and distance text)
      */
     public void locationProviderDisabled() {
         currentLocation = null;

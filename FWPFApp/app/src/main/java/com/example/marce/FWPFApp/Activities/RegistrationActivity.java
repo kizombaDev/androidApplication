@@ -29,10 +29,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /*
+* this activity handles the registration of a contact
+*
 * Datei: RegistrationActivity  Autor: Marcel
 * Datum: 17.12   Version: <Versionsnummer>
 * Historie:
-* 17.12: Marcel Activity mit grundlegenden Funktionen erstellt
+* 17.12: Marcel creates the activity
 */
 
 public class RegistrationActivity extends AppCompatActivity {
@@ -89,12 +91,18 @@ public class RegistrationActivity extends AppCompatActivity {
         mProgressView = null;
     }
 
+    /**
+     * read the phone number of the telephony server and write the numer into the view
+     */
     private void setPhoneNumber() {
         TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         String mPhoneNumber = telephonyManager.getLine1Number();
         phoneNumberView.setText(mPhoneNumber);
     }
 
+    /**
+     * this method is executed if the user click on the registration button
+     */
     private void attemptRegister() {
         if (registerTask != null) {
             return;
@@ -127,10 +135,6 @@ public class RegistrationActivity extends AppCompatActivity {
             userNameView.setError(getString(R.string.error_field_required));
             focusView = userNameView;
             cancel = true;
-        } else if (!isUserNameValid(userName)) {
-            userNameView.setError(getString(R.string.error_invalid_userName));
-            focusView = userNameView;
-            cancel = true;
         } else if (!isUserNameTooShort(userName)) {
             userNameView.setError(getString(R.string.error_too_short_userName));
             focusView = userNameView;
@@ -151,15 +155,22 @@ public class RegistrationActivity extends AppCompatActivity {
         }
     }
 
-
-    private boolean isUserNameValid(String userName) {
-        return true;
-    }
-
+    /**
+     * determines whether the user name is to short
+     *
+     * @param userName the user name
+     * @return true if the user name is to short otherwise false
+     */
     private boolean isUserNameTooShort(String userName) {
         return userName.length() > 2;
     }
 
+    /**
+     * determines whether the phone numer is valid
+     *
+     * @param phoneNumber the phone numer
+     * @return true if the phone numer is valid otherwise false
+     */
     private boolean isPhoneNumberValid(String phoneNumber) {
         return PhoneNumberUtils.isGlobalPhoneNumber(phoneNumber);
     }
@@ -204,7 +215,7 @@ public class RegistrationActivity extends AppCompatActivity {
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
-    public class UserRegisterTask extends AsyncTask<Void, Void, Boolean>  {
+    public class UserRegisterTask extends AsyncTask<Void, Void, Boolean> {
 
         private final String userName;
         private final String phoneNumber;
@@ -238,8 +249,7 @@ public class RegistrationActivity extends AppCompatActivity {
                 String myId = "-1";
                 try {
                     myId = registerRequestResponseJsonWithMyId.getString("Id");
-                }
-                catch(JSONException e){
+                } catch (JSONException e) {
                     e.printStackTrace();
                 }
 

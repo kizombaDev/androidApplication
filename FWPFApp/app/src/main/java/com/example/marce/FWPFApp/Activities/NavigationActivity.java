@@ -32,10 +32,13 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 /*
+*
+* this class handle the big blue navigation arrow
+*
 * Datei: NavigationActivity  Autor: Marcel
 * Datum: 17.12  Version: <Versionsnummer>
 * Historie:
-* 17.12: Marcel Activity mit grundlegenden Funktionen erstellt
+* 17.12: Marcel creates the class
 */
 
 public class NavigationActivity extends AppCompatActivity implements LocationListener, SensorEventListener {
@@ -60,9 +63,8 @@ public class NavigationActivity extends AppCompatActivity implements LocationLis
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
+        //get the contact from the conactListViewActivity
         Intent intent = this.getIntent();
-
-
         contact = intent.getParcelableExtra(Globals.navigationActitivyIntend());
 
 
@@ -88,19 +90,15 @@ public class NavigationActivity extends AppCompatActivity implements LocationLis
     private void startContactUpdateTrigger() {
         final Handler handler = new Handler();
         contactUpdateTimer = new Timer();
-        TimerTask doAsynchronousTask = new TimerTask()
-        {
+        TimerTask doAsynchronousTask = new TimerTask() {
             @Override
             public void run() {
                 handler.post(new Runnable() {
                     public void run() {
-                        try
-                        {
+                        try {
                             triggerGetContactLocationData();
 
-                        }
-                        catch (Exception e)
-                        {
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
@@ -115,11 +113,14 @@ public class NavigationActivity extends AppCompatActivity implements LocationLis
         contactUpdateTimer.purge();
     }
 
-    private void triggerGetContactLocationData(){
+    private void triggerGetContactLocationData() {
         GetContactLocationDataTask task = new GetContactLocationDataTask();
         task.execute((Void) null);
     }
 
+    /**
+     * init the camera view and add this surface to the contentView
+     */
     private void initCameraView() {
         if (!Globals.isEmulator()) {
             CameraSurfaceView cameraSurfaceView = new CameraSurfaceView(this);
@@ -127,7 +128,11 @@ public class NavigationActivity extends AppCompatActivity implements LocationLis
         }
     }
 
+    /**
+     * creates and set the two GLSurfaceViews with the arrow and the text info
+     */
     private void initGLView() {
+        //creates the arrow surfaceView
         glArrowSurfaceView = new GLSurfaceView(this);
         glArrowSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
         glArrowSurfaceView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
@@ -135,6 +140,7 @@ public class NavigationActivity extends AppCompatActivity implements LocationLis
         glArrowSurfaceView.setRenderer(navigationArrowRenderer);
         addContentView(glArrowSurfaceView, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 
+        //creates the texture surfaceView
         glTextureSurfaceView = new GLSurfaceView(this);
         glTextureSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
         glTextureSurfaceView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
@@ -147,8 +153,7 @@ public class NavigationActivity extends AppCompatActivity implements LocationLis
     @Override
     protected void onPause() {
         super.onPause();
-        //Wenn die View nicht angezeigt wird sollen die SurfaceViews nichts zeichnen und es werden auch keien Neuen
-        //Daten vom Server und den Sensoren benötigit
+        //unregister and stop the surfaceViews if the app are paused
         unregisterSensors();
         glArrowSurfaceView.onPause();
         glTextureSurfaceView.onPause();
@@ -158,8 +163,7 @@ public class NavigationActivity extends AppCompatActivity implements LocationLis
     @Override
     protected void onResume() {
         super.onResume();
-        //Da die View wieder angezeigt werden soll, werden die Sensor und ServerDaten wieder benötitgt.
-        //Die SurfaceVies müssen wieder gezeichent werden
+        //register and start the surfaceViews if the app/activity is resumed
         registerSensors();
         glArrowSurfaceView.onResume();
         glTextureSurfaceView.onResume();
@@ -189,6 +193,11 @@ public class NavigationActivity extends AppCompatActivity implements LocationLis
     }
 
 
+    /**
+     * the have to update the navigation arrow if one angle has changed
+     *
+     * @param event
+     */
     @Override
     public void onSensorChanged(SensorEvent event) {
         angleCalculationHelper.setSensorEvent(event);
@@ -205,6 +214,10 @@ public class NavigationActivity extends AppCompatActivity implements LocationLis
 
     }
 
+    /**
+     * handles the GLArrow update
+     * calculates the angle to the targetLocation
+     */
     private void updateGLArrow() {
         if (currentDeviceLocation == null) {
             return;
@@ -214,10 +227,10 @@ public class NavigationActivity extends AppCompatActivity implements LocationLis
             return;
 
         Location destination = contact.getLocation();
-        //Berechnet den Winkel zwischen den zwei Standorten
+        //calculates the angle between to locations
         float angleToDestination = currentDeviceLocation.bearingTo(destination);
 
-        //Berechnet den Winkel des Pfeils
+        //calculates the angle of the navigation arrow
         float angleToTargetLocationZ = (angleToDestination - deviceAngleZ);
         if (angleToTargetLocationZ < 0) {
             angleToTargetLocationZ += 360;
@@ -225,7 +238,6 @@ public class NavigationActivity extends AppCompatActivity implements LocationLis
 
         navigationArrowRenderer.updateAngleToTargetLoactionZ(angleToTargetLocationZ);
         navigationArrowRenderer.updateDeviceAngleX(deviceAngleX);
-
     }
 
     private void updateGLContactInformation() {
@@ -274,9 +286,8 @@ public class NavigationActivity extends AppCompatActivity implements LocationLis
 
         @Override
         protected void onPostExecute(final Boolean success) {
-                updateGLArrow();
-                updateGLContactInformation();
-                Log.i("got new location", "arrow updated");
+            updateGLArrow();
+            updateGLContactInformation();
         }
     }
 }

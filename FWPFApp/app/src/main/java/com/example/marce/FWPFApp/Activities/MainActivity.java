@@ -14,11 +14,19 @@ import com.example.marce.FWPFApp.Helper.Globals;
 import com.example.marce.FWPFApp.R;
 import com.example.marce.FWPFApp.Service.LocationService;
 
+
 /*
+*
+* This activity decides whether the user is already registered or not
+* if the user is registered the contactlistview activity is started
+* if the user is not registed the registration activity is started
+*
+* if the gps is dislabed the app ask the user to enable the gps
+*
 * Datei: MainActivity  Autor: Marcel
 * Datum: 17.12  Version: <Versionsnummer>
 * Historie:
-* 17.12: Marcel Activity mit grundlegenden Funktionen erstellt
+* 17.12: Marcel creates the class
 */
 
 public class MainActivity extends AppCompatActivity {
@@ -37,15 +45,20 @@ public class MainActivity extends AppCompatActivity {
         locationManager = (LocationManager)
                 getSystemService(Context.LOCATION_SERVICE);
 
-        if(isGPSEnabled()) {
+        if (isGPSEnabled()) {
             startActivities();
-        }
-        else
-        {
+        } else {
             askUserToEnableGPS();
         }
     }
 
+    /**
+     * handles the activity results
+     *
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -56,13 +69,9 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 finish();
             }
-        }
-        else if(requestCode == contactListViewActivityRequestCode)
-        {
+        } else if (requestCode == contactListViewActivityRequestCode) {
             finish();
-        }
-        else if (requestCode == locationSourceActivityRequestCode)
-        {
+        } else if (requestCode == locationSourceActivityRequestCode) {
             startActivities();
         }
     }
@@ -82,32 +91,49 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * handles the registration activity start
+     */
     private void startRegistrationActivity() {
         Intent registrationIntent = new Intent(MainActivity.this, RegistrationActivity.class);
         MainActivity.this.startActivityForResult(registrationIntent, registerActivityRequestCode);
     }
 
+    /**
+     * Determines whether the user is already registered or not
+     *
+     * @return returns true if the user is registred otherwise false
+     */
     private boolean isUserRegistered() {
         SharedPreferences settings = getSharedPreferences(Globals.settingFile(), MODE_PRIVATE);
-        if(settings.contains(Globals.setttingIsUserRegistered()))
-        {
+        if (settings.contains(Globals.setttingIsUserRegistered())) {
             return true;
-        }
-        else
-        {
+        } else {
             return false;
         }
     }
 
+    /**
+     * handles the contactlistView activity start
+     */
     private void startListViewActivity() {
         Intent contactListViewIntent = new Intent(MainActivity.this, ContactListViewActivity.class);
         MainActivity.this.startActivityForResult(contactListViewIntent, contactListViewActivityRequestCode);
     }
 
+    /**
+     * Determines whehter the gps is enabled or disabled
+     *
+     * @return returns true if the gps is enabled otherwise false
+     */
     public boolean isGPSEnabled() {
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
     }
 
+
+    /**
+     * this method handles the dialog to ask the user that the should enable the gps
+     */
     private void askUserToEnableGPS() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
 

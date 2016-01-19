@@ -16,14 +16,14 @@ public class PhonebookRetriever {
     }
 
     public String[] getAllPhonebookNumbers() {
-        Cursor phones = context.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,null,null, null);
+        Cursor phones = context.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
         String[] numbers = new String[phones.getCount()];
-        for(int i = 0; i < phones.getCount(); i++) {
+        for (int i = 0; i < phones.getCount(); i++) {
             phones.moveToNext();
             String phoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
             numbers[i] = phoneNumber;
         }
         phones.close();
-        return  numbers;
+        return numbers;
     }
 }

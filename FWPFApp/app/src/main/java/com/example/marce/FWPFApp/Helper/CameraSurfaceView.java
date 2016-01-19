@@ -10,27 +10,22 @@ import java.io.IOException;
 
 
 /**
+ * this class creats a surfaceView, which are rendered in to the navigationactivity
+ * the cameraSurfaceView use the android.hardware.camera, to render the camera preview
+ * this camera class is deprected from anrdoid 5.x
+ * in the lecture we are develop apps for android 4.x so we used this class anyway
+ * <p/>
  * Datei: CameraSurfaceView  Autor: Marcel
  * Datum: 22.12  Version: <Versionsnummer>
  * Historie:
- * 16.12: Marcel Erstellung der Klasse
- *
- * Diese Klasse stellt eine SurfaceView zur Verfügung, welche innerhalb der View gerendert wird.
- * Diese Klasse CameraView nutzt intern die Klasse android.hardware.Camera, welche ab der Android Version 5.0 als veraltet gilt.
- * Da wir in der Vorlesung jedoch gezielt für Android 4.x entwickeln sollten nutzen wir diese Klasse trotzdem.
- * <p/>
- * Created by Marcel Swoboda
+ * 16.12: Marcel creats the class
  */
 public class CameraSurfaceView extends SurfaceView implements Callback {
     private Camera camera;
 
     public CameraSurfaceView(Context context) {
         super(context);
-        // We're implementing the Callback interface and want to get notified
-        // about certain surface events.
         getHolder().addCallback(this);
-        // We're changing the surface to a PUSH surface, meaning we're receiving
-        // all buffer data from another component - the camera, in this case.
         getHolder().setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
     }
 
@@ -53,7 +48,6 @@ public class CameraSurfaceView extends SurfaceView implements Callback {
             e.printStackTrace();
         }
         // ...and start previewing. From now on, the camera keeps pushing preview
-        // images to the surface.
         camera.startPreview();
     }
 

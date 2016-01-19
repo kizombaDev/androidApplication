@@ -16,19 +16,19 @@ import com.example.marce.FWPFApp.Helper.Globals;
 import com.example.marce.FWPFApp.ServerCommunication.Requests.UpdateMyCurrentLocationPutRequest;
 
 /**
- * Der LocationService schickt die aktuellen Standortdaten an den Server
- * Sobald neue Standortdaten vorliegen wir die Methoe onLocationChanged vom LocationManager aufgerufen.
- * Der Server kann den Client anhand einer ID, welcher der Client bei der Anmeldung erhalten hat und
- * sich in den  SharedPreferences speichert, zuordnen.
- *
+ * The locationService sends the current gps data to the server
+ * if the gps sensor has new gps values the method onLocationChanged are called.
+ * The server recognizes the client by the id, which the client get from the server at the registration
+ * This id is saved in the sharedPreferences
+ * <p/>
  * Datei: LocationService  Autor: Marcel
  * Datum: 22.12  Version: <Versionsnummer>
  * Historie:
- * 20.12: Marcel Erstellung der Klasse
- * 27.12: Marcel Zeitinterval für den LocationManager verkleinert
+ * 20.12: Marcel creates the class
+ * 27.12: Marcel change the timing interval of the locationManager
  */
 
-public class LocationService extends Service  implements LocationListener {
+public class LocationService extends Service implements LocationListener {
     private LocationManager locationManager;
     private UpdateMyLocationTask updateMyLocationTask;
 
@@ -43,12 +43,18 @@ public class LocationService extends Service  implements LocationListener {
     }
 
     @Override
+    /**
+     * Create the loaction Manager
+     */
     public void onCreate() {
         locationManager = (LocationManager)
                 getSystemService(Context.LOCATION_SERVICE);
     }
 
     @Override
+    /**
+     * register this class by the location Manger
+     */
     public int onStartCommand(Intent intent, int flags, int startId) {
         try {
             //Meldet en LocationService für neue Standortdaten an ... alle 15 Sekunden oder bei 20 Meter
@@ -57,7 +63,7 @@ public class LocationService extends Service  implements LocationListener {
             Log.e("GPS", "No permissions", e);
         }
 
-        return super.onStartCommand(intent,flags,startId);
+        return super.onStartCommand(intent, flags, startId);
     }
 
     @Override
@@ -76,7 +82,7 @@ public class LocationService extends Service  implements LocationListener {
 
     @Override
     public void onLocationChanged(Location location) {
-        //Neue Daten an den Server schicken
+        //send the new location to the server
         updateMyLocationTask = new UpdateMyLocationTask(location);
         updateMyLocationTask.execute((Void) null);
     }
@@ -96,11 +102,11 @@ public class LocationService extends Service  implements LocationListener {
 
     }
 
-    public class UpdateMyLocationTask extends AsyncTask<Void, Void, Boolean>{
+    public class UpdateMyLocationTask extends AsyncTask<Void, Void, Boolean> {
 
         private final Location location;
 
-        public UpdateMyLocationTask(Location location){
+        public UpdateMyLocationTask(Location location) {
             this.location = location;
         }
 

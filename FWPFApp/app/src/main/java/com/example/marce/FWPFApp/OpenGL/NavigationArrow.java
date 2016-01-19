@@ -8,15 +8,16 @@ import java.nio.FloatBuffer;
 import javax.microedition.khronos.opengles.GL10;
 
 /**
- * In dieser Klasse ist das Aussehen des Pfeils mit Hilfe von Vektoren definiert
- * Aus Performance gründen werden die Float-Arrays in FloatBuffer gespeichert ... dies passiert im Konstruktor
+ * This class contains the look of the blue arrow
+ * The look are definied eith vertices in an array
+ * The arrays are tranformed into buffer because the performacne of byte and float buffer are better
  * <p/>
  * Datei: NavigationArrow  Autor: Marcel
  * Datum: 19.12  Version: <Versionsnummer>
  * Historie:
- * 19.12: Marcel 2D Pfeil erstellt
- * 20.12: Marcel aus dem 2D ein 3D Pfeil gemacht
- * 27.12: Marcel Farbe des Pfeils angepasst
+ * 19.12: Marcel create a 2D arrow
+ * 20.12: Marcel transform the 2D arrow to a 3D arrow
+ * 27.12: Marcel change the color of the arrow
  */
 
 public class NavigationArrow {
@@ -26,17 +27,16 @@ public class NavigationArrow {
     private ByteBuffer indexBuffer;
 
     private byte[] indices = {
-            0, 1, 2, //Vektor 0, 1 und 2 aus dem vertices-Array ergeben ein Dreieck
-            2, 1, 3  //Vektor 2, 1 und 3 aus dem vertices-Array ergeben ein Dreieck
+            0, 1, 2, //vertex 0, 1 and 2 defines one triangle
+            2, 1, 3  //vertex 2, 1 and 3 defines the second triangle
     };
 
-    //Vektor definitionen
+    //this array contains the vertices defintions
     private float vertices[] = {
             -0.75f, -0.75f, 0.0f,
             0.0f, -0.3f, 0.1f,
             0.0f, 0.75f, 0.0f,
             0.75f, -0.75f, 0.0f,
-            0.0f, -0.3f, -0.1f
     };
 
 
@@ -48,33 +48,33 @@ public class NavigationArrow {
     };
 
     public NavigationArrow() {
-        //Für jeden float wert werden 4 Bytes benötigit
         ByteBuffer vertexByteBuffer = ByteBuffer.allocateDirect(vertices.length * 4);
         vertexByteBuffer.order(ByteOrder.nativeOrder());
         vertexBuffer = vertexByteBuffer.asFloatBuffer();
 
-        // vektoren werden in den Buffer gefüllt
+        //fill the values into the buffer
         vertexBuffer.put(vertices);
 
-        // Buffer wieder auf position 0 setzen
+        //rest the buffer to zero
         vertexBuffer.position(0);
 
-        //Für jeden float wert werden 4 Bytes benötigit
+        //allocate four bytes because a float are four byte large
         ByteBuffer cbb = ByteBuffer.allocateDirect(colors.length * 4);
         cbb.order(ByteOrder.nativeOrder());
         colorBuffer = cbb.asFloatBuffer();
         colorBuffer.put(colors);
         colorBuffer.position(0);
 
-        //Da hier nur bytes gespeichert werden müssen reicht ein Byte pro Array Eintrag
+        //allocate the indexBuffer ... because the values are only ints one byte is allocate for each value
         indexBuffer = ByteBuffer.allocateDirect(indices.length);
         indexBuffer.put(indices);
         indexBuffer.position(0);
     }
 
     /**
-     * Zeichnet den Pfeil in das gl object
-     * @param gl GL in das der Pfeil gezeichnet werden soll
+     * draw the arrow into the gl object
+     *
+     * @param gl into this gl object the arrow are drawn
      */
     public void draw(GL10 gl) {
 
@@ -83,7 +83,7 @@ public class NavigationArrow {
         gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
         gl.glColorPointer(4, GL10.GL_FLOAT, 0, colorBuffer);
 
-        //Zeichnet den Pfeil anhand der Daten aus dem Buffer
+        //draw the arrow based on the indexbuffer
         gl.glDrawElements(GL10.GL_TRIANGLES, indices.length, GL10.GL_UNSIGNED_BYTE, indexBuffer);
         gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
         gl.glDisableClientState(GL10.GL_COLOR_ARRAY);

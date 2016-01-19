@@ -16,11 +16,11 @@ public abstract class Request {
     protected String requestUrl;
     protected String requestType;
 
-    public Request(){
+    public Request() {
 
     }
 
-    protected String readJSONStringFromInputStream(InputStream inputStream){
+    protected String readJSONStringFromInputStream(InputStream inputStream) {
         String returnJSONString = "";
         try {
             BufferedReader streamReader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
@@ -31,13 +31,13 @@ public abstract class Request {
                 responseStrBuilder.append(inputStr);
 
             returnJSONString = responseStrBuilder.toString();
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return returnJSONString;
     }
 
-    protected JSONArray readJSONArrayFromInputStream(InputStream inputStream){
+    protected JSONArray readJSONArrayFromInputStream(InputStream inputStream) {
         JSONArray returnJSONArray = null;
         try {
             returnJSONArray = new JSONArray(readJSONStringFromInputStream(inputStream));
@@ -47,13 +47,13 @@ public abstract class Request {
         return returnJSONArray;
     }
 
-    protected JSONObject readJSONObjectFromInputStream(InputStream inputStream){
+    protected JSONObject readJSONObjectFromInputStream(InputStream inputStream) {
         JSONObject returnJSONObject = null;
         try {
-            returnJSONObject =  new JSONObject(readJSONStringFromInputStream(inputStream));
+            returnJSONObject = new JSONObject(readJSONStringFromInputStream(inputStream));
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return  returnJSONObject;
+        return returnJSONObject;
     }
 }

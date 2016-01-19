@@ -20,7 +20,7 @@ public class GetAllContactsLocationDataPostRequest extends PostRequest {
     private JSONArray jsonArrayToSend;
     private JSONArray responseJsonArray;
 
-    public GetAllContactsLocationDataPostRequest(String[] phoneNumbers){
+    public GetAllContactsLocationDataPostRequest(String[] phoneNumbers) {
         this.requestUrl = this.serverUrl + urlPath;
         setJsonArrayToSend(phoneNumbers);
     }
@@ -41,8 +41,7 @@ public class GetAllContactsLocationDataPostRequest extends PostRequest {
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 InputStream inputStream = urlConnection.getInputStream();
                 responseJsonArray = (JSONArray) readJSONArrayFromInputStream(inputStream);
-            }
-            else{
+            } else {
                 throw new Exception("not implemented");
             }
         } catch (MalformedURLException e) {
@@ -63,15 +62,15 @@ public class GetAllContactsLocationDataPostRequest extends PostRequest {
         return responseJsonArray;
     }
 
-    public void setJsonArrayToSend(String[] phoneNumbers){
+    public void setJsonArrayToSend(String[] phoneNumbers) {
         jsonArrayToSend = new JSONArray();
         JSONObject currentPhonenumberJson;
-        for(int i = 0; i < phoneNumbers.length; i++){
+        for (int i = 0; i < phoneNumbers.length; i++) {
             currentPhonenumberJson = new JSONObject();
-            try{
+            try {
                 currentPhonenumberJson.put("PhoneNumber", phoneNumbers[i]);
                 jsonArrayToSend.put(currentPhonenumberJson);
-            }catch (JSONException e) {
+            } catch (JSONException e) {
                 e.printStackTrace();
             }
         }

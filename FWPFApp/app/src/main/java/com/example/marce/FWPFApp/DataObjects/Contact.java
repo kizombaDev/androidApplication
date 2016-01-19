@@ -6,11 +6,15 @@ import android.os.Parcelable;
 
 import java.util.Date;
 
+
 /*
+* The dataobject Contact. The contact contains all data of one contact.
+* To transfer the contact from one activity to another activity the contact implements the Parcelable interface
+
 * Datei: Contact  Autor: Marcel
 * Datum: 17.12  Version: <Versionsnummer>
 * Historie:
-* 17.12: Marcel Klasse mit ersten Getter und Settern erstellt
+* 17.12: Marcel creates the class with first getter and setter
 */
 
 public class Contact implements Parcelable {
@@ -20,15 +24,13 @@ public class Contact implements Parcelable {
 
     private Date locationUpdateTime;
 
-    private String phoneNumber;
-
     public Contact(String name, Location location) {
         this.name = name;
         this.location = location;
     }
 
     //Patrick
-    public Contact(String id, String name, Location location){
+    public Contact(String id, String name, Location location) {
         this(name, location);
         this.id = id;
     }
@@ -37,17 +39,21 @@ public class Contact implements Parcelable {
         return location;
     }
 
-    public String getId() { return id;}
+    public String getId() {
+        return id;
+    }
 
     public void setLocation(Location location) {
         this.location = location;
     }
 
-    public Date getLocationUpdateTime(){
+    public Date getLocationUpdateTime() {
         return this.locationUpdateTime;
     }
 
-    public void setLocationUpdateTime(Date date) { this.locationUpdateTime = date;}
+    public void setLocationUpdateTime(Date date) {
+        this.locationUpdateTime = date;
+    }
 
     public float distanceToLocation(Location secondLocation) {
         if (location == null)
@@ -75,7 +81,7 @@ public class Contact implements Parcelable {
     public static final Parcelable.Creator<Contact> CREATOR
             = new Parcelable.Creator<Contact>() {
         public Contact createFromParcel(Parcel in) {
-            return new Contact(in.readString(), in.readString(), (Location)in.readParcelable(Location.class.getClassLoader()));
+            return new Contact(in.readString(), in.readString(), (Location) in.readParcelable(Location.class.getClassLoader()));
         }
 
         public Contact[] newArray(int size) {

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Search Friend App</string>
+    <string name="app_name">FriendFinder</string>
     <string name="title_activity_registration">Registrierung</string>
 
     <!-- Strings related to login -->
