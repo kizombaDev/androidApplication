@@ -81,13 +81,14 @@ public class NavigationTextureRenderer implements Renderer {
             String distanceString = new DecimalFormat("0.00").format(distance) + units;
             glText.draw("Entfernung: " + distanceString, 10, 60);
         }
-        if (locationUpdateTime != null)
-            glText.draw("Letzte Aktualisierung: vor " + getLastUpdateString(), 10, 0);
-        glText.end();                                   // End Text Rendering
+    }
 
-        // disable texture + alpha
-        gl.glDisable(GL10.GL_BLEND);                  // Disable Alpha Blend
-        gl.glDisable(GL10.GL_TEXTURE_2D);             // Disable Texture Mapping
+    private void drawLastUpdate() {
+        if (locationUpdateTime != null) {
+            glText.draw("Letzte Aktualisierung: vor " + getLastUpdateString(), 10, 0);
+        } else {
+            glText.draw("Letzte Aktualisierung: N/A", 10, 0);
+        }
     }
 
     private String getLastUpdateString() {
